@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <style>
+        .frame, iframe {
+            border: 2px solid #aaa;
+            border-radius: 5px;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+<div style="line-height: 30px; font-size: 15px;">
+    ABC
+</div>
+<h2>iframe 和 a</h2>
+<div class="frame">
+    <h4>第一层</h4>
+    <iframe name="frameA" src="/frameA.html" frameborder="0" width="500" height="400"
+            style="border: 2px solid #aaa; border-radius: 5px;"></iframe>
+    <h4><a href="//baidu.com" target="frameA">在第二层打开</a></h4>
+</div>
+
+<div>
+    <h2>a 标签 download 属性</h2>
+    <h4><a href="/frameA.html" download="frameX.html">下载“frameA.html”并另存为“frameX.html”</a></h4>
+    <h4><a id="anchorPoint" style="color: red;">我是锚点</a></h4>
+    <h2>a 标签 href 属性</h2>
+    <h4>几种可以打开 index 的 href：
+        <a href="/">href='/'</a>；
+        <a href="/.">href="/."</a>；
+        <a href="/..">href="/.."</a>；
+        <a href="/index.html">href="/index.html"</a>
+        <a href="/index.html/">href="/index.html/"</a>
+    </h4>
+    <h4><a href="?name=foo">发起查询（GET）请求</a></h4>
+    <h4><a href="javascript:;">点击无跳转且无页面内跳转</a></h4>
+    <h4><a href="javascript:alert('知道了');">点击执行js弹框</a></h4>
+    <h4 style="margin-top: 100vh;"><a href="#">点击无跳转但页面内跳转到顶部</a></h4>
+    <h4><a href="#anchorPoint">页面内跳转到锚点</a></h4>
+</div>
+</body>
+</html>
