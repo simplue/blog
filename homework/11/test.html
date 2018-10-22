@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        /*span {*/
+            /*border: 1px solid red;*/
+            /*!*一般用于中文分词*!*/
+            /*!*word-break: break-all;*!*/
+            /*!*一般用于英文分词*!*/
+            /*!*word-break: break-word;*!*/
+            /*padding: 10px 10px;*/
+            /*line-height: 20px;*/
+            /*!*margin: 10px 10px;*!*/
+            /*!*padding: 20px 10px;*!*/
+        /*}*/
+
+        /*div {*/
+            /*border: 1px solid green;*/
+            /*!*display: inline-block;*!*/
+        /*}*/
+
+
+
+        /*.bug {*/
+            /*font-size: 30px;*/
+            /*!*line-height: 20px;*!*/
+
+        /*}*/
+
+        /*.inlineHeight {*/
+            /*!*line-height: 20px;*!*/
+        /*}*/
+
+        table td {
+            padding: 10px 20px;
+        }
+
+        table td *:not(div) {
+            border: 1px solid red;
+        }
+
+        table td > div {
+            border: 1px solid green;
+        }
+
+        table td:nth-child(3) *:not(div) {
+            line-height: 30px;
+        }
+
+        table td:nth-child(4) *:not(div) {
+            display: inline;
+            line-height: 30px;
+        }
+
+        table td:nth-child(5) *:not(div) {
+            height: 30px;
+        }
+
+        table td:nth-child(6) *:not(div) {
+            display: inline;
+            height: 30px;
+        }
+
+        table td:nth-child(7) *:not(div) {
+            width: 100px;
+        }
+
+        table td:nth-child(8) *:not(div) {
+            display: inline;
+            width: 100px;
+        }
+
+        table td:nth-child(9) *:not(div) {
+            padding: 10px;
+        }
+
+        table td:nth-child(10) *:not(div) {
+            display: inline;
+            padding: 10px;
+        }
+
+        table td:nth-child(11) *:not(div) {
+            margin: 10px;
+        }
+
+        table td:nth-child(12) *:not(div) {
+            display: inline;
+            margin: 10px;
+        }
+
+
+    </style>
+
+</head>
+<body>
+<!--<div style="width:1000px;padding:100px">-->
+    <!--<div></div>-->
+<!--</div>-->
+<hr style="margin-bottom: 20px;">
+<div>
+
+<span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span><span>文字</span>
+</div>
+    <h1>foo</h1>
+<textarea name="" id="" cols="30" rows="10"></textarea>aaaaaaaaa
+<img src="http://temp.im/123x456" alt="">
+<button>按钮</button>
+<input type="button" value="input按钮" style="display: inline;
+    /* height: 55px; */
+    line-height: 37px;
+    font-size: 20px;
+    padding: 20px;
+    margin: 5px;">
+<div style="width: 100%; height: 80px;">   </div>
+    <div style="display: inline; height: 20px; border: 1px solid gold">123</div>
+
+<!--字体以基线作为基准的，就是字母 a 的底部这条线，但是不同字体之间是对其不了的-->
+    <!--<div class="inlineHeight"><span>x</span><span class="bug">bug</span></div>-->
+
+    <!--<div style="margin: 200px;"></div>-->
+    <!--<span>文字1</span><span>文字2</span><span>文字3</span><span>文字4</span><span>文字5</span><span>文字6</span><span>文字7</span><span>文字8</span><span>文字9</span><span>文字10</span><span>文字11</span><span>文字12</span>-->
+
+    <!--<div>文字1</div>-->
+    <!--<div>文字2</div>-->
+    <!--<div>文字3</div>-->
+    <!--<div>文字4</div>-->
+    <!--<div>文字5</div>-->
+    <!--<div>文字6</div>-->
+    <!--<div>文字7</div>-->
+    <!--<div>文字8</div>-->
+    <!--<div>文字9</div>-->
+    <!--<div>文字10</div>-->
+    <table border="1">
+        <thead>
+        <tr>
+            <th>元素</th>
+            <th>对照组</th>
+            <th>line-height</th>
+            <th>inline & line-height</th>
+            <th>height</th>
+            <th>inline & height</th>
+            <th>width</th>
+            <th>inline & width</th>
+            <th>padding</th>
+            <th>inline & padding</th>
+            <th>margin</th>
+            <th>inline & margin</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>button</td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+            <td><div><button>按钮</button></div></td>
+        </tr>
+        <tr>
+            <td>input[type=button]</td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+            <td><div><input type="button" value="按钮"></div></td>
+        </tr>
+        <tr>
+            <td>textarea</td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+            <td><div><textarea name="" id="" cols="30" rows="10"></textarea></div></td>
+        </tr>
+        <tr>
+            <td>span</td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+            <td><div><span>SPAN</span></div></td>
+        </tr>
+        <tr>
+            <td>img</td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+            <td><div><img src="http://temp.im/50x50" alt=""></div></td>
+        </tr>
+        <tr>
+            <td>input[type="text"]</td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+            <td><div><input type="text"></div></td>
+        </tr>
+        <tr>
+            <td>input[type="checkbox"]</td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+            <td><div><input type="checkbox">CHECK</div></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
