@@ -1,0 +1,54 @@
+@-webkit-keyframes rotation {
+    from {
+        transform: rotate(-90deg);
+    }
+    to {
+        transform: rotate(270deg);
+    }
+}
+
+.yinyang {
+    border-radius: 50%;
+    border: 3px solid black;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(to top, black 50%, white 50%);
+    position: relative;
+    animation: rotation 8s linear infinite;
+}
+
+.yang,
+.yin {
+    border-radius: 50%;
+    width: 50%;
+    height: 50%;
+    top: 25%;
+    position: absolute;
+}
+
+.yang {
+    background-color: white;
+    left: 50%;
+}
+
+.yin {
+    background-color: black;
+}
+
+.yindot,
+.yangdot {
+    border-radius: 50%;
+    width: 20%;
+    height: 20%;
+    left: 40%;
+    top: 40%;
+    position: absolute;
+}
+
+.yindot {
+    background-color: black;
+}
+
+.yangdot {
+    background-color: white;
+}
