@@ -108,9 +108,10 @@ line-height: 150%;
 
 ![word-break: break-word](https://upload-images.jianshu.io/upload_images/4430947-bd3a9d803253842f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-#### font-size，line-height
+#### font-size，line-height，padding（-left, -right），margin（-left, -right）
 `font-size`的内容大小意义
 `line-height`小于`content-area`时 span 的高度不变，如果`line-height`逐渐缩小至0，那么div的高度也会按照“某种的规律”缩小，但是其高度一般不会变零（不过`textarea`会）
+无效的padding top bottom（但是设置了背景色后就不同了），margin top bottom 就是设置了也没用，真没用
 
 #### span 包含的`<sup>` `<sub>`元素
 这两个元素貌似不影响`<span>`高度，但是会影响`div`的高度
