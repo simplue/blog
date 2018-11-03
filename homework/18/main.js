@@ -61,7 +61,7 @@ for (var keyMap of keys) {
       keyEditBtn = createTag('button')
 
     keyIcon.onerror = function (event) {
-      event.target.src = '/NA.png'
+      event.target.src = './NA.png'
     }
 
     keyEditBtn.onclick = function (event) {
