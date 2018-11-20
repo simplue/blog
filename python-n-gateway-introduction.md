@@ -1,8 +1,8 @@
 <!--# CGI, FastCGI, WSGI, Web Server, proxy_pass，uwsgi，uWSGI-->
 
-[TOC]
 
-# *GI
+# 网关接口
+
 ## CGI / Common Gateway Interface
 > 通用网关接口是一种重要的互联网技术，可以让一个客户端，从网页浏览器向执行在网络服务器上的程序请求数据。CGI描述了服务器和请求处理程序之间传输数据的一种标准。
 
@@ -21,9 +21,22 @@ FastCGI致力于减少网页服务器与CGI程序之间交互的开销，从而�
 
 
 # Web Server
+网页服务器，通常有两种解释，一种是指服务器软件，另一种是指专门用于运行提供网络服务的软件的硬件（俗称电脑，其与一般的 PC 最大不同在于：1）一般不使用图形界面操作；2）只运行提供网络服务的相关软件；3）强调稳定性和可靠性；4）对环境要求高，例如温湿度、网络、供电、维护和监控等）。这里我们只讨论服务器软件。
+
+
+
 ## Nginx
 
 ## Apache
+
+## Tengine
+
+## IIS
+
+## Google Web Server
+
+## lighttpd
+
 典型的有 [Apache HTTP服务器](https://zh.wikipedia.org/wiki/Apache_HTTP_Server)(apache 2.x的版本也叫[httpd](https://github.com/apache/httpd)), [lighttpd](https://zh.wikipedia.org/wiki/Lighttpd), Nginx
 > 网页服务器（Web server）一词有两个意思：
 一台负责提供网页的电脑，主要是各种编程语言构建而成，通过HTTP协议传给客户端（一般是指网页浏览器）。
@@ -53,6 +66,15 @@ Web 框架
 ## Tornado
 
 ## Flask
+
+# 部署
+## 反向代理
+
+## woker model
+
+## Docker
+
+## supervisor
 
 # FAQ
 ## 反向代理
@@ -84,6 +106,7 @@ protocol
 https://en.wikipedia.org/wiki/Common_Gateway_Interface
 https://en.wikipedia.org/wiki/FastCGI
 https://en.wikipedia.org/wiki/Simple_Common_Gateway_Interface
+https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface
 
 wsgi
 pep：https://www.python.org/dev/peps/

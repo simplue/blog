@@ -1,4 +1,5 @@
 # 开发工具下载
+
 |软件|链接|
 |:--:|:--:|
 |Git & GUI|Git：https://git-scm.com/downloads/<br>Sourcetree：https://www.sourcetreeapp.com<br>GitHub：https://desktop.github.com<br>TortoiseGit：https://tortoisegit.org/download/|
@@ -22,12 +23,9 @@
 |Cmder|http://cmder.net/|
 |Mark Text|https://github.com/marktext/marktext/releases|
 
-### 安装包推荐镜像
-|软件|链接|
-|:--|:--|
-|npm|https://npm.taobao.org/|
-|vagrant 源|http://www.vagrantbox.es/<br>https://app.vagrantup.com/<br>(官方box源貌似必须自动下载, 但可以通过vagrantfile起来后获取下载地址)<br>https://cloud-images.ubuntu.com/xenial/current/<br>https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/xenial/current/|
-||https://github.com/dbcli/mycli|
-|httpie|https://github.com/jakubroztocil/httpie/|
-|Apache Bench|`sudo apt-get install apache2-utils`<br>https://httpd.apache.org/docs/2.4/programs/ab.html|
-
+# 其他
+|软件|链接|说明|
+|:--:|:--:|:--:|
+|ab|`sudo apt install apache2-utils`<br>https://httpd.apache.org/docs/2.4/programs/ab.html<br>http://www.ha97.com/4617.html|压测|
+|HTTPie|https://github.com/jakubroztocil/httpie|类 curl|
+|Python shell|IPython：https://github.com/ipython/ipython<br>Jupyter：https://github.com/jupyter/docker-stacks<br>ptpython：https://github.com/prompt-toolkit/ptpython<br>bpython：https://github.com/bpython/bpython|-|

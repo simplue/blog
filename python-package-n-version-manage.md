@@ -36,6 +36,8 @@ extra-index-url =
 [list]
 format = freeze
 ```
+https://www.cnblogs.com/kimyeee/p/7250560.html
+https://github.com/pypa/pipenv
 
 [pypi官方](https://pypi.org/)
 
