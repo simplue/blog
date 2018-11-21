@@ -36,8 +36,18 @@ extra-index-url =
 [list]
 format = freeze
 ```
+
+```
+
+```
+
+[Linux编译安装中configure、make和make install各自的作用](https://my.oschina.net/surjur/blog/349464)
 https://www.cnblogs.com/kimyeee/p/7250560.html
 https://github.com/pypa/pipenv
+https://pipenv.readthedocs.io/en/latest/basics/
+
+http://www.dongwm.com/archives/%E4%BD%BF%E7%94%A8pipenv%E7%AE%A1%E7%90%86%E4%BD%A0%E7%9A%84%E9%A1%B9%E7%9B%AE/
+http://www.liujiangblog.com/blog/18/
 
 [pypi官方](https://pypi.org/)
 
@@ -45,4 +55,4 @@ https://github.com/pypa/pipenv
 
 [pip文档 install examples](https://pip.pypa.io/en/stable/reference/pip_install/#examples)
 
-[非官方 Windows 二进制安装包](https://www.lfd.uci.edu/~gohlke/pythonlibs/)（由加州大学欧文分校荧光动力学实验室维护）
+[非官方 Windows 二进制安装包](https://www.lfd.uci.edu/~gohlke/pythonlibs/)（加州大学欧文分校荧光动力学实验室维护）

@@ -22,6 +22,7 @@
 |编辑器|Visual Studio Code：https://code.visualstudio.com/download<br>Notepad++：https://notepad-plus-plus.org/download/|
 |Cmder|http://cmder.net/|
 |Mark Text|https://github.com/marktext/marktext/releases|
+|MariaDB|https://downloads.mariadb.org/|
 
 # 其他
 |软件|链接|说明|
@@ -29,3 +30,4 @@
 |ab|`sudo apt install apache2-utils`<br>https://httpd.apache.org/docs/2.4/programs/ab.html<br>http://www.ha97.com/4617.html|压测|
 |HTTPie|https://github.com/jakubroztocil/httpie|类 curl|
 |Python shell|IPython：https://github.com/ipython/ipython<br>Jupyter：https://github.com/jupyter/docker-stacks<br>ptpython：https://github.com/prompt-toolkit/ptpython<br>bpython：https://github.com/bpython/bpython|-|
+|phpMyAdmin|https://hub.docker.com/r/phpmyadmin/phpmyadmin/|-|
