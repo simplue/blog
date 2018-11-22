@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  pyweb:
+    build: ./app
+    ports:
+      - "127.0.0.1:8701:8888"
+    depends_on:
+      - mongodemo
+    volumes:
+      - ./app:/app
+    command: ["/bin/sh", "./wait-for-it", "mongodemo:27017", "--", "python2", "app.py"]
+
+  mongodemo:
+    build: ./mongo
