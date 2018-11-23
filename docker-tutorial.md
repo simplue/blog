@@ -34,7 +34,9 @@ sudo usermod -aG docker $USER
 
 # 镜像加速
 https://www.docker-cn.com/registry-mirror
-
+https://ieevee.com/tech/2016/09/28/docker-mirror.html
+https://hub.daocloud.io/
+https://docker.mirrors.ustc.edu.cn
 
 # 操作
 
@@ -71,7 +73,12 @@ docker start container-name
 // 停止运行
 docker stop container-name
 
-
+// 删除所有未运行容器
+docker rm $(docker ps -a -q)
+// 删除所有容器(含运行中)
+docker rm -f $(docker ps -a -q)
+// 删除所有镜像
+docker rmi $(docker images -q)
 
 ```
 sed 改镜像 https://mirrors.ustc.edu.cn/help/ubuntu.html#id7
@@ -134,6 +141,7 @@ docker start -i tornado-demo
 ```
 
 # Docker Compose
+文档 https://docs.docker.com/compose/compose-file/
 安装，参考: http://get.daocloud.io/
 ```
 sudo su
@@ -143,38 +151,57 @@ exit
 ```
 
 docker-compose.yml
+原始的 alpine 只能用 /bin/sh
+
 ```
 version: '3'
 
 services:
-  tornado-demo:
-    build: .
+  pyweb:
+    build: ./app
     ports:
-      - "8701:8888"
+      - "127.0.0.1:8701:8888"
     depends_on:
-      - mongo-demo
+      - mongodemo
     volumes:
-      - .:/app
+      - ./app:/app
+    command: ["./wait-for-it", "mongodemo:27017", "--", "python2", "app.py"]
 
-  mongo-demo:
-    image: "mongo:3.4"
+  mongodemo:
+    build: ./mongo
+```
+
+mysql 容器
+```
+docker run --name mysql-demo \
+        -p 127.0.0.1:8702:3306 \
+        -e MYSQL_ROOT_PASSWORD="*" \
+        -d mysql:5.7 \
+        --character-set-server=utf8mb4 \
+        --collation-server=utf8mb4_unicode_ci
+
+# 连接
+mysql -uroot -p -h 127.0.0.1 -P 8702
 ```
 
 # 常用镜像
-|镜像|链接|
-|:--:|:--:|
-|python|https://hub.docker.com/_/python/|
-|ubuntu|https://hub.docker.com/_/ubuntu/|
-|nginx|https://hub.docker.com/_/nginx/|
-|mariadb|https://hub.docker.com/_/mariadb/|
-|phpmyadmin|https://hub.docker.com/r/phpmyadmin/phpmyadmin/|
-|mysql|https://hub.docker.com/_/mysql/|
-|redis|https://hub.docker.com/_/redis/|
-|mongo|https://hub.docker.com/_/mongo/|
-|ipython|https://hub.docker.com/r/jupyter/|
-|node|https://hub.docker.com/_/node/|
-|openresty|https://hub.docker.com/r/openresty/openresty/|
-|gogs|https://hub.docker.com/r/gogs/gogs/|
-|sentry|https://hub.docker.com/_/sentry/|
-|drone|https://hub.docker.com/r/drone/drone/|
 
+|镜像|链接|命令|
+|:--:|:--:|:--:|
+|python|https://hub.docker.com/_/python/|`docker pull python:2.7-alpine`|
+|ubuntu|https://hub.docker.com/_/ubuntu/|`docker pull ubuntu:18.04`|
+|nginx|https://hub.docker.com/_/nginx/|`docker pull nginx:stable-alpine`|
+|mariadb|https://hub.docker.com/_/mariadb/|`docker pull mariadb`|
+|phpmyadmin|https://hub.docker.com/r/phpmyadmin/phpmyadmin/|`docker pull phpmyadmin/phpmyadmin`|
+|mysql|https://hub.docker.com/_/mysql/|`docker pull mysql`|
+|redis|https://hub.docker.com/_/redis/|`docker pull redis`|
+|mongo|https://hub.docker.com/_/mongo/|`docker pull mongo`|
+|ipython|https://hub.docker.com/r/jupyter/|`docker pull jupyter/base-notebook`|
+|node|https://hub.docker.com/_/node/|`docker pull node`|
+|openresty|https://hub.docker.com/r/openresty/openresty/|`docker pull openresty/openresty`|
+|gogs|https://hub.docker.com/r/gogs/gogs/|`docker pull gogs/gogs`|
+|sentry|https://hub.docker.com/_/sentry/|`docker pull sentry`|
+|drone|https://hub.docker.com/r/drone/drone/|`docker pull drone/drone`|
+
+# alpine
+https://pkgs.alpinelinux.org/packages

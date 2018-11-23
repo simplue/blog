@@ -30,7 +30,7 @@ wait_for() {
       fi
       exit 0
     fi
-    echo "still$HOST"
+    echo "still waiting..."
     sleep 1
   done
   echo "Operation timed out" >&2

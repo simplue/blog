@@ -1,15 +1,39 @@
 version: '3'
 
 services:
-  pyweb:
-    build: ./app
-    ports:
-      - "127.0.0.1:8701:8888"
-    depends_on:
-      - mongodemo
-    volumes:
-      - ./app:/app
-    command: ["/bin/sh", "./wait-for-it", "mongodemo:27017", "--", "python2", "app.py"]
+  # pyweb:
+  #   build: ./app
+  #   ports:
+  #     - "127.0.0.1:8701:8888"
+  #   env_file:
+  #       - ./mysql/secret.env
+  #   depends_on:
+  #     - mysqldemo
+  #   volumes:
+  #     - ./app:/app
+  #   command: ["./wait-for-it", "mysqldemo:3306", "--", "python2", "app.py"]
 
-  mongodemo:
-    build: ./mongo
+  mysqldemo:
+    image: mysql:5.7
+    env_file:
+        - ./mysql/secret.env
+    command:
+        --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+        - mysql_vol:/var/lib/mysql
+    restart: unless-stopped
+
+  php-admin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+        - 127.0.0.1:8702:80
+    env_file:
+        - ./mysql/secret.env
+    links:
+        - mysqldemo:db
+    # command: ["./wait-for-it", "mysqldemo:3306"]
+    restart: unless-stopped
+
+volumes:
+  mysql_vol:
+    external: true
