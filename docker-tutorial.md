@@ -21,8 +21,11 @@ sudo apt-get install docker-ce
 ```
 
 参考链接
+
 [官方](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
 [清华大学](https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/)
+
 [官方](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
 # 添加用户到docker组，避免使用sudo [参考链接](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user)
@@ -34,8 +37,11 @@ sudo usermod -aG docker $USER
 
 # 镜像加速
 https://www.docker-cn.com/registry-mirror
+
 https://ieevee.com/tech/2016/09/28/docker-mirror.html
+
 https://hub.daocloud.io/
+
 https://docker.mirrors.ustc.edu.cn
 
 # 操作
@@ -142,7 +148,9 @@ docker start -i tornado-demo
 
 # Docker Compose
 文档 https://docs.docker.com/compose/compose-file/
+
 安装，参考: http://get.daocloud.io/
+
 ```
 sudo su
 curl -L https://get.daocloud.io/docker/compose/releases/download/1.23.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
