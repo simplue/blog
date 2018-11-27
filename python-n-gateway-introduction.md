@@ -3,43 +3,51 @@
 
 # 网关接口
 
-## CGI / Common Gateway Interface
-> 通用网关接口是一种重要的互联网技术，可以让一个客户端，从网页浏览器向执行在网络服务器上的程序请求数据。CGI描述了服务器和请求处理程序之间传输数据的一种标准。
+Web 服务器（这里指服务器软件）自身通常只负责处理静态内容，动态内容（例如用户的个人信息）需要借助外部的应用程序。那么 Web 服务器和外部应用程序通讯时就需要借助一种协议，这类协议一般统称为网关接口。
 
-## SCGI / Simple Common Gateway Interface
-> 快速通用网关接口是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。
-FastCGI致力于减少网页服务器与CGI程序之间交互的开销，从而使服务器可以同时处理更多的网页请求。
+## CGI
+通用网关接口（全称 Common Gateway Interface），最早期的网关接口协议，目前在 Web 开发中用的很少。
 
-## FastCGI / Fast Common Gateway Interface
-> 快速通用网关接口是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。
-FastCGI致力于减少网页服务器与CGI程序之间交互的开销，从而使服务器可以同时处理更多的网页请求。
+## FastCGI
+快速通用网关接口，（全称：Fast Common Gateway Interface），一种 CGI 的改进版本，二进制协议。
 
-## WSGI / Web Server Gateway Interface
-> Web服务器网关接口是为Python语言定义的Web服务器和Web应用程序或框架之间的一种简单而通用的接口。自从WSGI被开发出来以后，许多其它语言中也出现了类似接口。
+## SCGI
+简单通用网关接口（全称：Simple Common Gateway Interface），一种 CGI 的改进版本，与 FastCGI 类似但更容易解析。
+
+## WSGI
+Python Web 服务器网管接口（全称：Web Server Gateway Interface），其实叫 PWSGI（Python Web Server Gateway Interface）或许更准确。一种 Python 应用程序与 Web 服务器的网关接口协议。最早在 [PEP0333](https://www.python.org/dev/peps/pep-0333/) 中定义，后面的为了适应 Python3 又在此基础上更新一版 [PEP3333](https://www.python.org/dev/peps/pep-3333/)。
 
 ## uwsgi
-
+uWSGI（注意是大写）的私有二进制协议，用在反向代理时 Web 服务器与 uWSGI 的通讯，需要借助插件（如 [ngx_http_uwsgi_module](http://nginx.org/en/docs/http/ngx_http_uwsgi_module.html)），更详细的协议信息：https://uwsgi-docs.readthedocs.io/en/latest/Protocol.html 。
 
 # Web Server
 网页服务器，通常有两种解释，一种是指服务器软件，另一种是指专门用于运行提供网络服务的软件的硬件（俗称电脑，其与一般的 PC 最大不同在于：1）一般不使用图形界面操作；2）只运行提供网络服务的相关软件；3）强调稳定性和可靠性；4）对环境要求高，例如温湿度、网络、供电、维护和监控等）。这里我们只讨论服务器软件。
 
 ## Nginx
+在目前的 Web 开发中使用最广泛的一种服务器，以高性能著称，也许是未来的 Apache。
 
 ## Apache
+有时也称 httpd，是另一种广泛使用的服务器，历史悠久，占有率高。
 
 ## 其他
 ### Tengine
+淘宝网基于 Nginx 并结合自身业务定制开发的一款开源服务器。
 
 ### IIS
+微软的，不多说。
 
 ### Google Web Server
+谷歌的，不多说。
 
 ### lighttpd
+号称轻量高性能，不了解。
 
-典型的有 [Apache HTTP服务器](https://zh.wikipedia.org/wiki/Apache_HTTP_Server)(apache 2.x的版本也叫[httpd](https://github.com/apache/httpd)), [lighttpd](https://zh.wikipedia.org/wiki/Lighttpd), Nginx
+### Caddy
+标榜默认 HTTP/2 和 HTTPS，不了解。
 
-# Application Server / WSGI Servers
-应用服务器, 一般用在反向代理，也可以作为http服务器, 不过一般不会这么做.
+# WSGI Servers
+顾名思义就是实现了 WSGI 协议的应用服务器（Application Server）。一般用在反向代理，也可以作为 Web 服务器使用, 不过通常不会这么做。
+
 ## Gunicorn
 从 ruby unicorn 移植
 
@@ -104,12 +112,10 @@ https://en.wikipedia.org/wiki/Common_Gateway_Interface
 https://en.wikipedia.org/wiki/FastCGI
 https://en.wikipedia.org/wiki/Simple_Common_Gateway_Interface
 https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface
-https://uwsgi-docs.readthedocs.io/en/latest/Protocol.html
 
 wsgi
 pep：https://www.python.org/dev/peps/
-https://www.python.org/dev/peps/pep-3333/
-https://www.python.org/dev/peps/pep-0333/
+
 https://www.fullstackpython.com/wsgi-servers.html
 https://grisha.org/blog/2013/10/25/mod-python-the-long-story/
 https://docs.python.org/2/howto/webservers.html
@@ -133,7 +139,7 @@ http://docs.gunicorn.org/en/latest/design.html
 https://docs.gunicorn.org/en/stable/faq.html
 
 uwsgi
-http://nginx.org/en/docs/http/ngx_http_uwsgi_module.html
+
 https://github.com/unbit/uwsgi
 
 nginx openresty

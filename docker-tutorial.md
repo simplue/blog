@@ -83,9 +83,19 @@ docker stop container-name
 docker rm $(docker ps -a -q)
 // 删除所有容器(含运行中)
 docker rm -f $(docker ps -a -q)
+
 // 删除所有镜像
 docker rmi $(docker images -q)
+// 删除无名镜像
+docker rmi -f $(docker images | grep "<none>" | awk '{print $3}')
+// 删除测试镜像
+docker rmi -f $(docker images | grep -E "test|demo|tmp|<none>" | awk '{print $3}')
 
+// 查看镜像数字摘要
+docker images --digests
+
+// 查看详情
+docker inspect image_or_container
 ```
 sed 改镜像 https://mirrors.ustc.edu.cn/help/ubuntu.html#id7
 
@@ -94,6 +104,13 @@ apt 占用 https://www.linuxidc.com/Linux/2014-06/103437.htm
 # Dockerfile 构建
 
 ## 一个基础镜像文件
+```
+# 镜像加速
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.huaweicloud.com/g' /etc/apk/repositories
+```
+
 ```
 # 基础镜像
 FROM python:2.7-alpine
