@@ -14,7 +14,7 @@
 |高校|链接|HTTPS|
 |:--:|:--:|:--:|
 |中国科学技术大学|https://mirrors.ustc.edu.cn|✔|
-|清华大学|https://mirrors.tuna.tsinghua.edu.cn<br>https://mirrors.cnnic.cn/|✔|
+|清华大学|https://mirrors.tuna.tsinghua.edu.cn<br>https://mirrors.cnnic.cn|✔|
 |兰州大学|https://mirror.lzu.edu.cn|✔|
 |大连东软信息学院|https://mirrors.neusoft.edu.cn|✔|
 |北京交通大学|https://mirror.bjtu.edu.cn|✔|
@@ -24,6 +24,7 @@
 |重庆大学|https://mirrors.cqu.edu.cn|✔|
 |同济大学|https://mirrors.tongji.edu.cn|✔|
 |上海交通大学|https://mirrors.sjtug.sjtu.edu.cn|✔|
+|上海科技大学|https://mirrors.geekpie.club|✔|
 |北京理工大学|https://mirror.bit.edu.cn|✔|
 |南京邮电大学|https://mirrors.njupt.edu.cn/|✔|
 |西北农林科技大学|https://mirrors.nwsuaf.edu.cn|✔|
