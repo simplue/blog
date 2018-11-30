@@ -46,7 +46,7 @@ uWSGI（注意是大写）的私有二进制协议，用在反向代理时 Web �
 标榜默认 HTTP/2 和 HTTPS，不了解。
 
 # WSGI Servers
-顾名思义就是实现了 WSGI 协议的应用服务器（Application Server）。一般用在反向代理，也可以作为 Web 服务器使用, 不过通常不会这么做。
+实现了 WSGI 协议的应用服务器（Application Server）。一般用在反向代理，也可以作为 Web 服务器使用, 不过通常不会这么做。
 
 ## Gunicorn
 从 ruby unicorn 移植

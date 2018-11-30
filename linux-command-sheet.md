@@ -218,12 +218,86 @@ lsb_release -a
 
 ## file hash
 ```
- 
-md5sum filename
-sha1sum filename
-sha256sum filename
-sha512sum filename
+md5sum filepath
+sha1sum filepath
+sha256sum filepath
+sha512sum filepath
 ```
+
+## ssh
+```
+# p 是小写
+ssh -p 22 user@host
+```
+
+## scp
+```
+# 注意 windows 下拷贝本地文件到远端时，建议不用“\”，因为可能导致文件名错误
+
+# 拷贝本地文件到远端
+scp /path/to/local/file user@host:/path/in/remote/
+
+# 拷贝本地文件到远端，并指定端口 22， P 是大写
+scp -P 22 /path/to/local/file user@host:/path/in/remote/
+
+# 拷贝本地文件夹到远端
+scp -r /path/to/local/ user@host:/path/in/remote/
+
+# 拷贝远端文件到本地
+scp user@host:/path/to/remote/file /path/in/local/
+
+# 拷贝远端目录到本地
+scp -r user@host:/path/in/remote/ /path/in/local/
+```
+
+## tar
+```
+# -c 创建归档/压缩
+# -x 解压/提取
+# -f 文件
+# -z gzip 处理 *.tar.gz、*.gz、*.tgz
+# -j bzip2 处理 *.tar.bz2、*.bz2
+# -Z compress 处理 *.tar.Z、*.Z
+# -v 显示详细信息
+# -C 改变目录，如提取时指定存放目录，或归档时改变目录层级
+
+# 归档
+tar cf ...
+# 提取
+tar xf ...
+
+# 创建 *.gz
+tar czf foo.tar.gz *
+# 解压 *.gz
+tar xzf foo.tar.gz
+
+# 创建 *.bz2
+tar cjf ...
+# 解压 *.bz2
+tar xjf ...
+
+# 创建 *.Z
+tar cZf ...
+# 解压 *.Z
+tar xZf ...
+```
+
+# netstat
+```
+# -a 全部端口
+# -l 监听端口
+# -t TCP
+# -u UDP
+# -p 显示进程，可能需要提权
+# -n 直接显示 ip 而非域名
+
+# 查看监听 tcp 80 端口的进程
+netstat -ltnp | grep 80
+
+# 查看全部处于通讯状态中的接口
+netstat -atnp | grep ESTABLISHED
+```
+
 
 ## 辅助
 ### [explainshell.com](https://explainshell.com/explain?cmd=echo+%22Hello+world%21%22)
