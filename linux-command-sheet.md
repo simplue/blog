@@ -216,6 +216,15 @@ cat /proc/cpuinfo
 lsb_release -a
 ```
 
+## file hash
+```
+ 
+md5sum filename
+sha1sum filename
+sha256sum filename
+sha512sum filename
+```
+
 ## 辅助
 ### [explainshell.com](https://explainshell.com/explain?cmd=echo+%22Hello+world%21%22)
 
