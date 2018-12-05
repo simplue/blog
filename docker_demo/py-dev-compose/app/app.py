@@ -7,6 +7,7 @@ import tornado.options
 
 tornado.options.parse_command_line()
 import MySQLdb
+import logging
 
 # import pymysql
 # import records
@@ -23,13 +24,19 @@ import MySQLdb
 #                              password='ho',
 #                              charset='utf8mb4',
 #                              cursorclass=pymysql.cursors.DictCursor)
-conn = MySQLdb.connect(
-    host='mysqldemo',
-    port=3306,
+
+import os
+db = MySQLdb.connect(
+    host=os.getenv('MYSQL_HOST', 'localhost'),
+    port=int(os.getenv('MYSQL_PORT', 3306)),
     user='root',
-    passwd='ho',
+    passwd=os.getenv('MYSQL_ROOT_PASSWORD'),
 )
 
+# MYSQL_ROOT_PASSWORD=123456
+# # MYSQL_USER=django
+# # MYSQL_PASSWORD=secret
+# MYSQL_DATABASE=myAppDB
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -41,7 +48,19 @@ class MainHandler(tornado.web.RequestHandler):
         #     collection.insert_one({'times': 2})
         #
         # exist = collection.find_one({'times': {'$gte': 0}})
+        # with conn.ge
+        with db.cursor() as cursor:
+            cursor.execute("SELECT VERSION()")
+            DB_VERSION = cursor.fetchone()
+            logging.info(DB_VERSION)
+            # data = r.fetchone()
+        # raise Exception
+        # 使用execute方法执行SQL语句
         exist = {'times': '1'}
+        logging.info('info')
+        logging.error('error')
+        logging.warning('warning')
+        self.write('MYSQL VERSION: {}'.format(DB_VERSION))
         self.finish("Hello, world {} times!".format(exist.get('times')))
 
 
