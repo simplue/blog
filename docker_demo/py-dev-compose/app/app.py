@@ -9,6 +9,8 @@ import tornado.web
 import tornado.gen
 import tornado.ioloop
 import tornado.options
+from raven.contrib.tornado import SentryMixin
+from raven.contrib.tornado import AsyncSentryClient
 
 tornado.options.parse_command_line()
 
@@ -64,6 +66,37 @@ class MainHandler(tornado.web.RequestHandler):
             self.write('<h1>REDIS MISS</h1>')
 
 
+class SentrySyncHandler(SentryMixin, tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        # self.captureMessage("Request for main page served")
+        _ = 1 / 0
+
+
+class SentryAsyncHandler(tornado.web.RequestHandler):
+
+    @tornado.gen.coroutine
+    def get(self):
+        import tornado.httpclient, logging
+        http_client = tornado.httpclient.AsyncHTTPClient()
+        # response = yield http_client.fetch("https://www.baidu.com")
+        response = yield http_client.fetch("http://192.168.163.129:9991")
+        # self.finish('abs')
+        # self.on_response(response)
+        # print(response)
+        body = response.body
+        logging.info(body, '------------------------')
+        self.finish("`{}`".format(body.replace('<', '-')))
+        return
+        try:
+            raise ValueError()
+        except Exception as e:
+            response = yield tornado.gen.Task(
+                self.captureException, exc_info=True
+            )
+        self.finish()
+
+
 @tornado.gen.coroutine
 def do_something(func_name):
     print 'from {} invoke at {}'.format(func_name, datetime.datetime.now())
@@ -78,9 +111,17 @@ def minute_loop():
 
 
 def make_app():
-    return tornado.web.Application([
+    app = tornado.web.Application([
         (r"/", MainHandler),
+        (r"/sentry-sync", SentrySyncHandler),
+        (r"/sentry-async", SentryAsyncHandler),
     ], debug=True)
+
+    app.sentry_client = AsyncSentryClient(
+        'http://11a8997ef5e64f7e9838c1d621b914c5:fd90619e963342aa801b1b5628afd5cf@sentry:9000/2'
+        # 'https://<key>:<secret>@sentry.io/<project>'
+    )
+    return app
 
 
 if __name__ == "__main__":
@@ -88,14 +129,3 @@ if __name__ == "__main__":
     event_loop = tornado.ioloop.IOLoop.current()
     event_loop.spawn_callback(minute_loop)
     event_loop.start()
-'''
-docker run -d --name=netdata \
-  -p 19999:19999 \
-  -v /proc:/host/proc:ro \
-  -v /sys:/host/sys:ro \
-  -v /var/run/docker.sock:/var/run/docker.sock:ro \
-  -e PGID=999 \
-  --cap-add SYS_PTRACE \
-  --security-opt apparmor=unconfined \
-  netdata/netdata
-'''
