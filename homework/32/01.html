@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我的页面</title>
+    <!--<link rel="stylesheet" href="./style.css">-->
+    <!--<link rel="stylesheet" href="./print.css" media="print">-->
+    <!--<link rel="stylesheet" href="./mobile.css" media="(max-width: 500px)">-->
+    <!--<script type="text/javascript" src="./main.js"></script>-->
+    <!--<script type="text/javascript" src="./gbk.js" charset="GBK"></script>-->
+    <style>
+        .roundRect {
+            /* border-radius 设置圆角半径 */
+            border-radius: 10px;
+
+            /* box-shadow 设置阴影 */
+            /* 从左往右依次：x偏移，y偏移，模糊半径，扩散半径，颜色  */
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+            /* 另 x 偏移值前加入 inset 可设置为向内阴影 */
+            /*box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);*/
+
+            background-color: #eee;
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+        }
+
+        @media (max-width: 375px) and (min-width: 320px) {
+            * {
+                font-size: 20px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <circle cx="50" cy="50" r="50" fill="black"/>
+</svg>
+<div class="roundRect"></div>
+<div>sji</div>
+</body>
+</html>
+username=ff&password=123
