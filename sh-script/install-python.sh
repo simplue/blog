@@ -54,6 +54,6 @@ echo "extracting..."
 tar -xzvf $save_path --directory $operate_folder
 echo "extract complete"
 
-cd $extra_path && ./configure --prefix=$configure_prefix && make && sudo make install && rm -rf extra_path
+cd $extra_path && ./configure --prefix=$configure_prefix && make && sudo make install && sudo rm -rf $extra_path
 
 exit 0
