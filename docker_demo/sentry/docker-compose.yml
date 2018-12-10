@@ -16,7 +16,7 @@ services:
         depends_on:
             - redis
             - postgres
-        restart: unless-stopped
+        restart: always
 
     sentry-cron:
         image: sentry:latest
@@ -32,7 +32,7 @@ services:
             - redis
             - postgres
         command: ["run", "cron"]
-        restart: unless-stopped
+        restart: always
 
     sentry-worker:
         image: sentry:latest
@@ -48,7 +48,7 @@ services:
             - redis
             - postgres
         command: ["run", "worker"]
-        restart: unless-stopped
+        restart: always
 
     redis:
         image: redis:4.0.11-alpine3.8
@@ -56,7 +56,7 @@ services:
             - sentry_network
         volumes:
             - sentry_redis_vol:/data
-        restart: unless-stopped
+        restart: always
 
     postgres:
         image: postgres:latest
@@ -66,7 +66,7 @@ services:
             - sentry_network
         volumes:
             - sentry_postgres_vol:/var/lib/postgresql/data
-        restart: unless-stopped
+        restart: always
 
 volumes:
     sentry_postgres_vol:

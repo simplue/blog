@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+    gogs:
+        image: gogs/gogs:latest
+        networks:
+            - gogs_network
+        ports:
+            - 0.0.0.0:10091:3000
+            - 0.0.0.0:10092:22
+        depends_on:
+            - mysql
+        restart: always
+
+    mysql:
+        image: mysql:5.7
+        env_file:
+            - ./mysql/secret.env
+        command:
+            --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        volumes:
+            - gogs_mysql_vol:/var/lib/mysql
+        networks:
+            - gogs_network
+        restart: always
+
+volumes:
+    gogs_mysql_vol:
+
+networks:
+    gogs_network:

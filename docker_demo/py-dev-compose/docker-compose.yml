@@ -10,7 +10,7 @@ services:
             - demo_network
         ports:
             - 0.0.0.0:9981:80
-        restart: unless-stopped
+        restart: always
 
     app:
         build: ./app
