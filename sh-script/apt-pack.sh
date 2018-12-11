@@ -15,15 +15,15 @@ pip_conf_file=$pip_folder/pip.conf
 sudo apt update \
 	&& sudo apt -y upgrade \
 	&& sudo apt -y install \
-			libssl-dev \
-			openssl \
-			python3-pip \
-			python3-dev \
-			python-pip \
-			python-dev \
-			libffi-dev \
-			build-essential \
-			libmysqlclient-dev \
+				libssl-dev \
+				openssl \
+				libffi-dev \
+				build-essential \
+				libmysqlclient-dev \
+				python3-dev \
+				python3-pip \
+				python-dev \
+				python-pip \
 	&& mkdir -p $pip_folder \
 	&& echo "[global]
 timeout = 20
@@ -34,6 +34,15 @@ index-url = https://mirrors.aliyun.com/pypi/simple/
 extra-index-url = https://mirrors.ustc.edu.cn/pypi/web/simple/
 				https://pypi.doubanio.com/simple/
 				https://pypi.tuna.tsinghua.edu.cn/simple/" > $pip_conf_file \
-	&& pip3 install --upgrade pip \
 	&& pip3 install --user -U pipenv
+	&& curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
+	&& sudo add-apt-repository \
+		"deb [arch=amd64] https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/ubuntu \
+		$(lsb_release -cs) \
+		stable" \
+	&& sudo apt update \
+	&& sudo apt -y install docker-ce \
+	&& curl -L https://get.daocloud.io/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m) > /tmp/docker-compose \
+	&& sudo cp /tmp/docker-compose /usr/local/bin/docker-compose \
+	&& sudo chmod +x /usr/local/bin/docker-compose
 	
