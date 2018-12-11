@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# install complier
+# 	https://askubuntu.com/questions/237576/no-acceptable-c-compiler-found-in-path
+# check packages
+#	https://askubuntu.com/questions/423355/how-do-i-check-if-a-package-is-installed-on-my-server
+if [[ $(dpkg -l build-essential) == "" ]]; then
+	echo "\"build-essential\" not found, u can install by \`sudo apt -y install build-essential\`"
+	exit 1
+fi
+
 # check argument
 # 	https://stackoverflow.com/questions/6482377/check-existence-of-input-argument-in-a-bash-shell-script
 if [ -z "$1" ]; then
@@ -25,13 +34,15 @@ configure_prefix="/usr/local/python/$version"
 #	status_code=$(curl -s -o /dev/null -I -w "%{http_code}" $index_url)
 resp=$(curl --silent --max-time 15 --write-out "%{http_code}" $index_url)
 if !([[ $resp =~ $version ]] && [[ $resp == *200 ]]); then
-   echo $resp
-   echo "version: $version not found"
+   # echo $resp
+   echo "version: $version not found in: \"$index_url\""
    exit 1
 fi
 
 # promt
 #	https://stackoverflow.com/questions/1885525/how-do-i-prompt-a-user-for-confirmation-in-bash-script
+# case
+# 	https://www.shellscript.sh/case.html
 echo "version: $version founded"
 read -p "Are you sure to download? y/Y to continue" -n 1 -r
 echo    # (optional) move to a new line

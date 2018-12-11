@@ -5,7 +5,6 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-
 version=$1
 # substring:
 # 	https://stackoverflow.com/questions/18864840/bash-substring-of-a-constant-string
@@ -19,9 +18,10 @@ else
 	echo "Python $version not install"
 fi
 
-sed -i 's/pypi.org/mirrors.aliyun.com\/pypi/g' Pipfile
+sed -i 's/pypi.org\/simple/mirrors.aliyun.com\/pypi\/simple\//g' Pipfile
 
 if [ -e "requirements.txt" ]; then 
+	echo 'detect requirements.txt installing...'
 	pipenv install -r requirements.txt
 fi
 
