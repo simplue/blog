@@ -1,4 +1,4 @@
-在 jupyter 内核中安装包
+在 jupyter 中 pip
 
 https://www.jianshu.com/p/c71325fc4239
 
