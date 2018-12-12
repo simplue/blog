@@ -24,6 +24,7 @@ sudo apt update \
 				python3-pip \
 				python-dev \
 				python-pip \
+				zsh \
 	&& mkdir -p $pip_folder \
 	&& echo "[global]
 timeout = 20
@@ -44,5 +45,7 @@ extra-index-url = https://mirrors.ustc.edu.cn/pypi/web/simple/
 	&& sudo apt -y install docker-ce \
 	&& curl -L https://get.daocloud.io/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m) > /tmp/docker-compose \
 	&& sudo cp /tmp/docker-compose /usr/local/bin/docker-compose \
-	&& sudo chmod +x /usr/local/bin/docker-compose
+	&& sudo chmod +x /usr/local/bin/docker-compose \
+	&& sudo sudo passwd ubuntu \
+	&& sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 	
