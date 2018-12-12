@@ -1,5 +1,4 @@
 FROM python:2.7.15-alpine3.7
-MAINTAINER zh <zh@simplue.cc>
 
 # COPY ./requirements.txt /data/requirements.txt
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
