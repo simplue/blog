@@ -23,6 +23,7 @@
 |Cmder|http://cmder.net/|
 |Mark Text|https://github.com/marktext/marktext/releases|
 |MariaDB|https://downloads.mariadb.org/|
+|rapidee|https://www.rapidee.com/en/download|
 
 # 其他
 |软件|链接|说明|
