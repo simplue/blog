@@ -9,3 +9,6 @@
 
 # virtualbox 修改虚拟机存放路径
 virtualbox >> 管理 >> 全局设定 >> 默认虚拟电脑路径
+
+# JetBrains IDE
+改选中文本背景色 `Settings -> Editor -> Color Scheme -> General -> Selection background(#219799) & Selection foreground(#ffffff)`
