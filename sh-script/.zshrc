@@ -86,9 +86,9 @@ source $ZSH/oh-my-zsh.sh
 source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # config thefuck
-# eval $(thefuck --alias)
+eval $(thefuck --alias)
 # You can use whatever you want as an alias, like for Mondays:
-# eval $(thefuck --alias FUCK)
+eval $(thefuck --alias FUCK)
 
 # config pure
 fpath=( "$HOME/.zfunctions" $fpath )
@@ -102,14 +102,32 @@ alias exportshell="cat ~/.zshrc > ~/personal/fee/sh-script/.zshrc"
 alias importshell="cat ~/personal/fee/sh-script/.zshrc > ~/.zshrc; source ~/.zshrc; echo done!"
 alias containers="docker ps -a"
 alias images="docker images"
-alias clean-images="docker rmi -f $(docker images | grep '<none>' | awk '{print $3}')"
 alias catp="ps -ef|grep $1"
 alias tcpstat="sudo netstat -atpn"
 alias nginxconf="cd /etc/nginx/sites-enabled"
+alias findbig="sudo find / -size +100M"
+
+# https://gist.github.com/peterjaap/22d06bbd1fd216eaf547
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias .....='cd ../../../../..'
 
 mkcd () {
     mkdir -p -- "$1" &&
       cd -P -- "$1"
+}
+
+cleanimages() {
+	docker rmi -f $(docker images | grep '<none>' | awk '{print $3}')
+}
+
+touchdocker() {
+	docker ps && echo
+	CONTAINER=$(bash -c 'read -p "Choose a container: " tmp; echo $tmp')
+	# vared -p 'What would you like to do?: ' -c tmp
+	docker exec -it "$CONTAINER" sh
 }
 
 alias lspipenv="ls /usr/local/python"
@@ -146,4 +164,25 @@ newpipenv() {
 	pipenv run python -V
 
 	return 0
+}
+
+extract (){
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar e $1   ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
 }

@@ -34,6 +34,7 @@ services:
             - ./app:/app:ro
         working_dir: /app
         command: ["./wait-for-it", "mysql:3306", "--", "./wait-for-it", "mongo:27017", "--", "./wait-for-it", "redis:6379", "--", "python2", "app.py"]
+        restart: unless-stopped
 
     mysql:
         image: mysql:5.7
