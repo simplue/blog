@@ -13,27 +13,66 @@ history=cat "%CMDER_ROOT%\config\.history"
 unalias=alias /d $1
 vi=vim $*
 cmderr=cd /d "%CMDER_ROOT%"
-;= do not use none-ascii character
-cc=c:
+
+;= ================================================================
+;= ********** do not use the fuckin none-ascii character **********
+;= ================================================================
+
+;= ================================================================
+;= path & dir
+;= ================================================================
+..=cd ..
+...=cd ../..
+....=cd ../../..
+.....=cd ../../../..
+.....=cd ../../../../..
 ~=c: && cd c:\Users\dell\
-adminlte=start chrome "http://localhost:9720/pages/UI/icons.html" && http-server -p 9720 "C:\pacofuture\AdminLTE"
-ccroot=c: && cd c:\
-cleanpipenv=pipenv --rm && rm -f Pipfile Pipfile.log
-dd=d:
-ddroot=d: && cd d:\
-edit=start notepad++ $1
-reloadshell=alias/reload
-editshell=start notepad++ c:\Users\dell\Downloads\config\user-aliases.cmd
-importshell=cat c:\personal_project\fee\win-sh-script\user_aliases.cmd > c:\Users\dell\cmder_mini\config\user_aliases.cmd; alias/reload
-exportshell=cat c:\Users\dell\cmder_mini\config\user_aliases.cmd > c:\personal_project\fee\win-sh-script\user_aliases.cmd
 home=c: && cd c:\Users\dell\
-hosts=start notepad++ c:\Windows\System32\drivers\etc\hosts
-ll=ls -al
-open=start
+cc=c: && cd c:\
+dd=d: && cd d:\
 pacofuture=c: && cd c:\pacofuture\
 personal=c: && cd c:\personal_project\
-rmpipenv=pipenv --rm && rm -f Pipfile Pipfile.lock
+
+;= ================================================================
+;= sys
+;= ================================================================
+ll=ls -al
+open=start
+edit=start notepad++ $1
+hosts=start notepad++ c:\Windows\System32\drivers\etc\hosts
+
+;= ================================================================
+;= git
+;= ================================================================
+gb=git branch
+
+;= ================================================================
+;= shell
+;= ================================================================
+reloadshell=alias/reload
+editshell=start notepad++ c:\Users\dell\Downloads\config\user-aliases.cmd
+importshell=cat c:\personal_project\fee\win-sh-script\user_aliases.cmd > c:\Users\dell\cmder_mini\config\user_aliases.cmd && alias/reload
+exportshell=cat c:\Users\dell\cmder_mini\config\user_aliases.cmd > c:\personal_project\fee\win-sh-script\user_aliases.cmd
+
+;= ================================================================
+;= local server
+;= ================================================================
 server=http-server
 serverhere=http-server -c-1
+adminlte=start chrome "http://localhost:9720/pages/UI/icons.html" && http-server -p 9720 "C:\pacofuture\AdminLTE"
+
+
+;= ================================================================
+;= virtual machine
+;= ================================================================
 vm=ssh ho@vm
+sendtovm=scp $1 ho@vm:$2
+sendfromvm=scp ho@vm:$1 $2
+sendfoldertovm=scp -r $1 ho@vm:$2
+sendfolderfromvm=scp -r ho@vm:$1 $2
+
+;= ================================================================
+;= python
+;= ================================================================
+rmpipenv=pipenv --rm && rm -f Pipfile Pipfile.lock
 newpipenv=bash -c 'if [ -e "/c/Python/$1/python.exe" ]; then pipenv --python "C:/Python/$1/python.exe"; sed -i "s/pypi.org\/simple/mirrors.aliyun.com\/pypi\/simple\//g" Pipfile; if [ -e "requirements.txt" ]; then echo "detect requirements.txt installing..."; pipenv install -r requirements.txt; fi; cat Pipfile; pipenv graph; pipenv run Python -V; else echo "version $1 not found,download: https://npm.taobao.org/mirrors/python/$1/"; fi'

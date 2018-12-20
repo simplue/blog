@@ -7,7 +7,7 @@
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="clean"
+ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -83,19 +83,16 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
 source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.profile
 
 # config thefuck
 eval $(thefuck --alias)
 # You can use whatever you want as an alias, like for Mondays:
 eval $(thefuck --alias FUCK)
 
-# config pure
-fpath=( "$HOME/.zfunctions" $fpath )
-autoload -U promptinit; promptinit
-prompt pure
-
-alias upmall="cd ~/pacofuture/gitee_mall_web && pipenv run python manage.py runserver 8720"
+alias upmall="cd ~/pacofuture/gitee_mall_web && docker-compose up -d"
 alias reloadshell="source ~/.zshrc"
 alias editshell="nano ~/.zshrc"
 alias exportshell="cat ~/.zshrc > ~/personal/fee/sh-script/.zshrc"
@@ -106,6 +103,8 @@ alias catp="ps -ef|grep $1"
 alias tcpstat="sudo netstat -atpn"
 alias nginxconf="cd /etc/nginx/sites-enabled"
 alias findbig="sudo find / -size +100M"
+alias mkdir="mkdir -p $1"
+alias pip3="python3 -m pip"
 
 # https://gist.github.com/peterjaap/22d06bbd1fd216eaf547
 alias ..='cd ..'
@@ -123,11 +122,18 @@ cleanimages() {
 	docker rmi -f $(docker images | grep '<none>' | awk '{print $3}')
 }
 
-touchdocker() {
+touchcontainer() {
 	docker ps && echo
 	CONTAINER=$(bash -c 'read -p "Choose a container: " tmp; echo $tmp')
 	# vared -p 'What would you like to do?: ' -c tmp
 	docker exec -it "$CONTAINER" sh
+}
+
+catcontainer() {
+	docker ps && echo
+	CONTAINER=$(bash -c 'read -p "Choose a container: " tmp; echo $tmp')
+	# vared -p 'What would you like to do?: ' -c tmp
+	docker logs -f "$CONTAINER"
 }
 
 alias lspipenv="ls /usr/local/python"

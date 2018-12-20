@@ -12,3 +12,6 @@ virtualbox >> 管理 >> 全局设定 >> 默认虚拟电脑路径
 
 # JetBrains IDE
 改选中文本背景色 `Settings -> Editor -> Color Scheme -> General -> Selection background(#219799) & Selection foreground(#ffffff)`
+
+# cmder
+建议使用字体：dejavu sans mono，避免乱码
