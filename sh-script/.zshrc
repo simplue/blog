@@ -93,6 +93,7 @@ eval $(thefuck --alias)
 eval $(thefuck --alias FUCK)
 
 alias upmall="cd ~/pacofuture/gitee_mall_web && docker-compose up -d"
+alias upprop="cd ~/pacofuture/gitee_prop_web && docker-compose up -d"
 alias reloadshell="source ~/.zshrc"
 alias editshell="nano ~/.zshrc"
 alias exportshell="cat ~/.zshrc > ~/personal/fee/sh-script/.zshrc"

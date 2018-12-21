@@ -77,8 +77,6 @@ services:
 
     mongo:
         image: mongo:3.6-stretch
-        env_file:
-            - ./mysql/secret.env
         volumes:
             - mongo_vol:/data/db
         networks:

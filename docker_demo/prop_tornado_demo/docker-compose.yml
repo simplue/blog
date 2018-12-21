@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx:stable-alpine
+        volumes:
+            - ./assets:/ngx-static:ro
+            - ./docker/nginx.conf:/etc/nginx/conf.d/app.conf:ro
+            - /home/ho/prop_web_upload:/prop_web_upload:ro
+        networks:
+            - prop_web_network
+        ports:
+            - 0.0.0.0:9982:80
+        restart: always
+
+    app:
+        build: ./
+        environment:
+            - MONGO_HOST=mongo
+            - STATIC_URL=http://www-local.prop-web.com:9982/static/
+            - STATIC_PATH=/prop_web_upload
+            - RUNNING_STATUS=debug
+        networks:
+            - prop_web_network
+        depends_on:
+            - nginx
+            - mongo
+        volumes:
+            - ./:/app:ro
+            - /home/ho/prop_web_upload:/prop_web_upload
+        expose:
+            - 8000
+        working_dir: /app
+        command: ["./wait-for-it", "mongo:27017", "--", "python2", "prop_web.py"]
+        restart: unless-stopped
+
+    mongo:
+        image: mongo:3.6-stretch
+        volumes:
+            - prop_web_mongo_vol:/data/db
+        networks:
+            - prop_web_network
+        command: ["mongod", "--smallfiles"]
+        restart: unless-stopped
+
+    mongo-express:
+        image: mongo-express:0.49
+        environment:
+            - ME_CONFIG_OPTIONS_EDITORTHEME=darcula
+        env_file:
+            - ./docker/mongo-express.env
+        networks:
+            - prop_web_network
+        depends_on:
+            - nginx
+            - mongo
+        restart: unless-stopped
+
+volumes:
+    prop_web_mongo_vol:
+
+networks:
+    prop_web_network:
