@@ -35,7 +35,7 @@
     },
     loadMessages: function () {
       this.model.fetch().then(
-        (messages) => {
+        messages => {
           let array = messages.map((item) => item.attributes)
           array.forEach((item) => {
             let li = document.createElement('li')
@@ -46,7 +46,7 @@
       )
     },
     bindEvents: function () {
-      this.form.addEventListener('submit', function (e) {
+      this.form.addEventListener('submit', e => {
         e.preventDefault()
         this.saveMessage()
       })
@@ -56,16 +56,16 @@
     },
     saveMessage: function () {
       let form = this.form
-      this.model.save(this.getInputByName(form, 'content'), this.getInputByName(form, 'name'))
-        .then(function (object) {
-            let
-              li = document.createElement('li'),
-              messageList = document.querySelector('#messageList')
-            li.innerText = `${object.attributes.name}: ${object.attributes.content}`
-            messageList.appendChild(li)
-            form.querySelector('input[name=content]').value = ''
-          }
-        )
+      this.model.save(this.getInputByName('name'), this.getInputByName('content')).then(
+        object => {
+          let
+            li = document.createElement('li'),
+            messageList = document.querySelector('#messageList')
+          li.innerText = `${object.attributes.name}: ${object.attributes.content}`
+          messageList.appendChild(li)
+          form.querySelector('input[name=content]').value = ''
+        }
+      )
     }
   }
 
