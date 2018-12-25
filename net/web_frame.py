@@ -1,6 +1,9 @@
+import os
+import time
 import socket
 import logging
-from socketserver import BaseRequestHandler, TCPServer
+from functools import wraps
+from socketserver import BaseRequestHandler, ThreadingTCPServer
 
 SEPARATOR = '\r\n'
 MAX_PACKET = 1024
@@ -9,53 +12,41 @@ FORMAT = '%(asctime)s - %(message)s'
 logging.basicConfig(format=FORMAT)
 logging.getLogger().setLevel('INFO'.upper())
 
-# https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
-# server-demo: https://stackoverflow.com/a/10114266
-class BaseHandler(BaseRequestHandler):
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'template')
 
+
+def timming(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        start = time.time()
+        try:
+            req, resp = func(*args, **kwargs)
+        except TypeError:
+            return
+
+        logging.info(f'{resp["status_code"]} {req["method"]} {req["route"]} {int((time.time() - start) * 1000)}ms')
+        return req
+
+    return inner
+
+
+# byte:
+#   https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
+# server-demo:
+#   https://stackoverflow.com/a/10114266
+# shutdown server:
+#   https://stackoverflow.com/a/21442489
+# socket reuse:
+#   https://stackoverflow.com/q/17659334
+class BaseHandler(BaseRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.handlers = user_handlers
 
-    def send(self, data):
-        self.request.send(data if isinstance(data, bytes) else data.encode())
-
-    def set_headers(self, headers):
-        self.send_separator()
-        self.send(SEPARATOR.join('{}: {}'.format(k, v) for k, v in headers.items()))
-
-    def send_status(self, status_code=200, http_protocol_version=None):
-        http_protocol_version = \
-            http_protocol_version or '1.1'
-        assert http_protocol_version in ['1.0', '1.1']
-        _status_code = int(status_code)
-        status_desc = {
-            200: 'OK',
-            301: 'Move Permanently',
-            302: 'Found',
-            404: 'Not Found',
-            405: 'Method Not Allowed',
-        }.get(_status_code, 'WTF?!')
-        self.send(f'HTTP/{http_protocol_version} {_status_code} {status_desc}')
-
-    def send_separator(self, count=1):
-        self.send(count * SEPARATOR)
-
-    def response(self, body):
-        self.send_status()
-        self.set_headers({
-            'Content-Type': 'text/html; encoding=utf8',
-            'Content-Length': len(body),
-            'Connection': 'close',
-        })
-        self.send_body(body)
-
-    def send_body(self, body):
-        self.send_separator(2)
-        self.send(body)
-
     def get_raw_request(self):
-        self.request.settimeout(0.1)
+        self.request.settimeout(0.001)
         req_data = []
         while True:
             try:
@@ -63,26 +54,6 @@ class BaseHandler(BaseRequestHandler):
                 req_data.append(chunk)
             except socket.timeout:
                 return ''.join(req_data)
-
-    def send_error(self, status_code, body=''):
-        assert int(status_code) > 399
-        self.send_status(status_code=status_code)
-        self.send_body('<html><center><h1>Not Found</h1></center></html>')
-
-    def send_error_404(self):
-        self.send_error(404, '<html><center><h1>Not Found</h1></center></html>')
-
-    def send_error_405(self):
-        self.send_error(405, '<html><center><h1>Method Not Allowed</h1></center></html>')
-
-    def send_error_500(self):
-        self.send_error(500, '<html><center><h1>Server Error</h1></center></html>')
-
-    def redirect(self, url, permanent=False):
-        self.send_status(status_code=301 if permanent else 302)
-        self.set_headers({
-            'Location': url,
-        })
 
     def parse_request(self):
         raw_req = self.get_raw_request()
@@ -110,109 +81,228 @@ class BaseHandler(BaseRequestHandler):
             'body': body,
         }
 
+    def pong(self):
+        self.request.send(f'HTTP/1.0 200 OK{SEPARATOR}Connection: close{2 * SEPARATOR}'.encode())
+
+    @timming
     def handle(self):
-        req = self.parse_request()
-        if req is None:
-            return self.response('')
-        route = req['route']
-        method = req['method']
+        parsed_request = self.parse_request()
+        if parsed_request is None:
+            return self.pong()
 
-        logging.info(f'{req["method"]} {route}')
+        route, method = parsed_request['route'], parsed_request['method']
+        handle_class = user_handlers.get(route) or DefaultHandler
+        handler = handle_class(self.request, parsed_request)
 
-        # print(self.handlers)
-        handle_class = user_handlers.get(route)
-        if not handle_class or not callable(handle_class):
-            return self.send_error_404()
+        handle_func = handler.get if handle_class is DefaultHandler \
+            else getattr(handler, method.lower())
+        try:
+            handle_func()
+        except:
+            import traceback
+            handler.send_error_500(traceback.format_exc())
 
-        _handler = handle_class(self.request, req)
-        handle_func = getattr(_handler, method.lower())
-        if not handle_func:
-            return self.send_error_405()
-        handle_func()
+        if not handler.is_finished():
+            handler.finish()
+        handler.send_all()
+
+        return parsed_request, handler.get_resp_info()
+
+
+def no_write_after_finish(func):
+    @wraps(func)
+    def inner(handler, *args, **kwargs):
+        if handler.is_finished():
+            raise Exception('can not write after finished')
+        return func(handler, *args, **kwargs)
+
+    return inner
 
 
 class UserBaseHandler():
 
-    def __init__(self, request, request_info):
+    def __init__(self, request, parsed_request):
         self.request = request
-        self.request_info = request_info
+        self.parsed_request = parsed_request
+        self.__buffer = []
+        self.__head_buffer = []
+        self.__headers = {}
+        self.__status_set = False
+        self.__status_code = 200
+        self.__finished = False
+        self.__http_status_error = False
+        self.__default_http_protocol_version = '1.1'
 
-    def send(self, data):
-        self.request.send(data if isinstance(data, bytes) else data.encode())
+    @no_write_after_finish
+    def write(self, chunk):
+        if self.__finished:
+            raise Exception('request has been finish')
 
-    def set_headers(self, headers):
-        self.send_separator()
-        self.send(SEPARATOR.join('{}: {}'.format(k, v) for k, v in headers.items()))
+        if not chunk:
+            raise Exception('chunk can not be empty')
 
-    def send_status(self, status_code=200, http_protocol_version=None):
-        http_protocol_version = \
-            http_protocol_version or '1.1'
+        self.__buffer.append(chunk if isinstance(chunk, bytes) else chunk.encode())
+
+    @no_write_after_finish
+    def write_head_buffer(self, chunk):
+        if self.__finished:
+            raise Exception('request has been finish')
+
+        if not chunk:
+            raise Exception('chunk can not be empty')
+
+        self.__head_buffer.append(chunk if isinstance(chunk, bytes) else chunk.encode())
+
+    def clean_resp(self):
+        self.__buffer = []
+        self.__head_buffer = []
+        self.__headers = {}
+        self.__status_set = False
+        self.__status_code = 200
+        self.__finished = False
+
+    def is_finished(self):
+        return self.__finished
+
+    def try_file(self):
+        file_path = os.path.join(
+            STATIC_DIR,
+            self.parsed_request['route'][1:].replace('static/', ''))
+        if not os.path.isfile(file_path):
+            return self.send_error_404()
+
+        with open(file_path, 'rb') as f:
+            file_content = f.read()
+            ext = file_path.split(".")[-1]
+            self.set_headers(**{
+                'Content-Type': f'image/{"webp" if ext == "ico" else ext}',
+                'Content-Length': len(file_content),
+            })
+            self.finish(file_content)
+
+    def finish(self, chunk=None):
+        if self.__finished:
+            raise Exception('request has been finish')
+
+        if chunk:
+            self.write(chunk)
+
+        http_protocol_version = self.parsed_request['http_protocol_version'] \
+                                or self.__default_http_protocol_version
         assert http_protocol_version in ['1.0', '1.1']
-        _status_code = int(status_code)
         status_desc = {
             200: 'OK',
             301: 'Move Permanently',
             302: 'Found',
             404: 'Not Found',
             405: 'Method Not Allowed',
-        }.get(_status_code, 'WTF?!')
-        self.send(f'HTTP/{http_protocol_version} {_status_code} {status_desc}')
+            500: 'Internal Server Error',
+        }.get(self.__status_code, 'WTF?!')
 
-    def send_separator(self, count=1):
-        self.send(count * SEPARATOR)
+        self.write_head_buffer(''.join([
+            f'HTTP/{http_protocol_version} {self.__status_code} {status_desc}',
+            SEPARATOR,
+            SEPARATOR.join('{}: {}'.format(k, v) for k, v in self.__headers.items()),
+            2 * SEPARATOR,
+        ]))
+        self.__finished = True
 
-    def response(self, body):
-        self.send_status()
-        self.set_headers({
+    def send_all(self):
+        self.request.send(b''.join(self.__head_buffer))
+        self.request.send(b''.join(self.__buffer))
+
+    @no_write_after_finish
+    def set_headers(self, **headers):
+        self.__headers.update(headers)
+
+    @no_write_after_finish
+    def set_status(self, status_code):
+        if self.__status_set:
+            raise Exception('headers has been set')
+        self.__status_set = True
+        self.__status_code = int(status_code)
+
+    def get_resp_info(self):
+        return {
+            'status_code': self.__status_code
+        }
+
+    def text_response(self, body):
+        self.set_status(200)
+        self.set_headers(**{
             'Content-Type': 'text/html; encoding=utf8',
             'Content-Length': len(body),
-            'Connection': 'close',
         })
-        self.send_body(body)
+        self.finish(body)
 
-    def send_body(self, body):
-        self.send_separator(2)
-        self.send(body)
-
-    def get_raw_request(self):
-        self.request.settimeout(0.1)
-        req_data = []
-        while True:
-            try:
-                chunk = self.request.recv(MAX_PACKET).decode().strip()
-                req_data.append(chunk)
-            except socket.timeout:
-                return ''.join(req_data)
-
-    def send_error(self, status_code, body=''):
+    def send_error(self, status_code, body=None, template_path=None):
         assert int(status_code) > 399
-        self.send_status(status_code=status_code)
-        self.send_body('<html><center><h1>Not Found</h1></center></html>')
+        self.__http_status_error = True
+        self.clean_resp()
+        self.set_status(status_code)
+        if body:
+            return self.finish(body)
+        self.render(template_path)
 
     def send_error_404(self):
-        self.send_error(404, '<html><center><h1>Not Found</h1></center></html>')
+        self.send_error(404, template_path='404.html')
 
     def send_error_405(self):
-        self.send_error(405, '<html><center><h1>Method Not Allowed</h1></center></html>')
+        self.send_error(405, template_path='405.html')
 
     def send_error_500(self):
-        self.send_error(500, '<html><center><h1>Server Error</h1></center></html>')
+        self.send_error(500, template_path='500.html')
 
     def redirect(self, url, permanent=False):
-        self.send_status(status_code=301 if permanent else 302)
-        self.set_headers({
-            'Location': url,
-        })
+        self.set_status(301 if permanent else 302)
+        self.set_headers(Location=url)
+        self.finish()
+
+    def render(self, template_path):
+        template_full_path = os.path.join(TEMPLATE_DIR, template_path)
+        if not os.path.isfile(template_full_path):
+            return self.send_error_404()
+
+        with open(template_full_path, 'r') as f:
+            content = f.read()
+            self.set_headers(**{
+                'Content-Type': 'text/html; encoding=utf8',
+                'Content-Length': len(content),
+            })
+            self.write(content)
+
+    def get(self):
+        self.send_error_405()
+
+    def post(self):
+        self.send_error_405()
+
+    def put(self):
+        self.send_error_405()
+
+    def delete(self):
+        self.send_error_405()
+
+    def option(self):
+        self.send_error_405()
+
+    def head(self):
+        self.send_error_405()
+
+
+class DefaultHandler(UserBaseHandler):
+    def get(self):
+        self.try_file()
 
 
 class AfterHandler(UserBaseHandler):
     def get(self):
-        self.response('<html><body><h1>Hello, world!?</h1></html>')
+        self.text_response(f'<html><body><h1>{self.parsed_request["route"]}</h1></html>')
 
 
 class IndexHandler(UserBaseHandler):
     def get(self):
-        self.redirect('http://localhost:20000/after')
+        self.text_response(f'<html><body><h1>{self.parsed_request["route"]}</h1></html>')
 
 
 user_handlers = {
@@ -221,7 +311,12 @@ user_handlers = {
     '/after': AfterHandler,
 }
 
-# https://stackoverflow.com/a/21442489
 if __name__ == '__main__':
-    serv = TCPServer(('', 20000), BaseHandler)
-    serv.serve_forever()
+    server = ThreadingTCPServer(('', 20000), BaseHandler, False)
+    server.allow_reuse_address = True
+    server.server_bind()
+    server.server_activate()
+    try:
+        server.serve_forever()
+    except:
+        server.shutdown()

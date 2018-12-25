@@ -13,6 +13,11 @@ TOK_REGEX = re.compile(r"(%s.*?%s|%s.*?%s)" % (
     BLOCK_TOKEN_END
 ))
 
+# 原理
+#   https://www.jianshu.com/p/b5d4aa45e771
+#   https://www.jianshu.com/p/d6551dfacd58
+# 源码
+#   https://github.com/aosabook/500lines/blob/master/template-engine/code/templite.py
 content = """Hello, {{name}}!
 {% if role == "admin" %}
 <a href="/dashboard">Dashboard</a>
