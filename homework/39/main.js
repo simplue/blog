@@ -10,7 +10,7 @@ setTimeout(function () {
     el.classList.add('offset')
   }
   highlightNav()
-}, 2500)
+}, 1500)
 
 
 window.onscroll = function () {

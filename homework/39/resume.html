@@ -44,6 +44,11 @@
                 </a>
             </li>
             <li>
+                <a href="#message" class="menuTrigger">
+                    留言
+                </a>
+            </li>
+            <li>
                 <a href="#" class="menuTrigger">
                     博客
                     <ul class="dropDownMenu">
@@ -53,8 +58,6 @@
                     </ul>
                 </a>
             </li>
-            <li><a href="#">联系</a></li>
-            <li><a href="#">其他</a></li>
         </ul>
     </div>
 </nav>
@@ -181,8 +184,23 @@
             <img src="./job2.jpg" alt="">
         </div>
     </section>
+
+    <section class="message" data-x id="message">
+        <h2>留言</h2>
+        <ol id="messageList">
+        </ol>
+        <form id="postMessageForm" style="width: 700px; margin: 50px auto;">
+            <label>姓名</label>
+            <input type="text" name="name">
+            <label>内容</label>
+            <input type="text" name="content">
+            <input type="submit" value="提交">
+        </form>
+    </section>
 </main>
 <script src="https://cdn.bootcss.com/tween.js/r14/Tween.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
 <script src="./main.js"></script>
+<script src="./message.js"></script>
 </body>
 </html>
