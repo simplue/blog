@@ -17,7 +17,23 @@ COMMENT_TOKEN_END = '#}'
 #     COMMENT_TOKEN_START,
 #     COMMENT_TOKEN_END))
 
-TOK_REGEX = re.compile(fr'(?s)({VAR_TOKEN_START}.*?{VAR_TOKEN_END}|{BLOCK_TOKEN_START}.*?{BLOCK_TOKEN_END}|{COMMENT_TOKEN_START}.*?{COMMENT_TOKEN_END})')
+TOK_REGEX = re.compile(
+    fr'(?s)({VAR_TOKEN_START}.*?{VAR_TOKEN_END}|{BLOCK_TOKEN_START}.*?{BLOCK_TOKEN_END}|{COMMENT_TOKEN_START}.*?{COMMENT_TOKEN_END})')
+
+SPACE_REGEX = re.compile(r'\s+')
+
+
+def remove_all_blank(s):
+    return re.sub(SPACE_REGEX, '', s)
+
+
+def remove_all_blank_n_split(s, separator):
+    return remove_all_blank(s).split(separator)
+
+
+def join_n_remove_all_blank(l, separator):
+    return remove_all_blank(separator.join((l)))
+
 
 # 原理
 #   https://www.jianshu.com/p/b5d4aa45e771
@@ -179,18 +195,6 @@ class Templite(object):
                     # A loop: iterate over expression result.
                     code.add_line(self._expr_code(token[2: -2].strip(), self.loop_vars) + ':')
                     ops_stack.append('for')
-
-                    # for _word in words:
-                    #     if _word in []
-                    #
-                    # if len(words) != 4 or words[2] != 'in':
-                    #     self._syntax_error('Do not understand for', token)
-                    # ops_stack.append('for')
-                    # self._variable(words[1], self.loop_vars)
-                    # code.add_line(
-                    #     f'for c_{words[1]} in {self._expr_code(words[3])}:'
-                    # )
-
                     code.indent()
                 elif words[0].startswith('end'):
                     # Endsomething.  Pop the ops stack.
@@ -225,14 +229,17 @@ class Templite(object):
 
     def _expr_code(self, expr, var_sets=None):
         """Generate a Python expression for `expr`."""
-
         tokens = [i for i in re.split(
-            r'([_a-zA-Z][_a-zA-Z0-9]*\(.*\)(?!.+\.items\(\))|\s)', expr) if i and i.strip()]
-
+            r'([_a-zA-Z][_a-zA-Z0-9\.]*\(.*\)|\s+)', expr) if i and i.strip()]
+        # tokens = [i for i in re.split(r'([_a-zA-Z\{\[][\'\"\:\,_a-zA-Z0-9]*\}*\]*\.\(.*\)|\s)', expr) if i and i.strip()]
         print(tokens)
-
         default_var_set = self.all_vars if var_sets is None else var_sets
         var_sets_separate_index = tokens.index('in') if tokens[0] == 'for' else 0
+        if var_sets_separate_index:
+            tokens[1: var_sets_separate_index] = \
+                [join_n_remove_all_blank(tokens[1: var_sets_separate_index], separator='')]
+            var_sets_separate_index = tokens.index('in')
+
         for index, token in enumerate(tokens[:]):
             r = self._variable(token, default_var_set if index < var_sets_separate_index else self.all_vars)
             tokens[index] = f'c_{token}' if r is None else str(r[1])
@@ -251,17 +258,19 @@ class Templite(object):
         Raises an syntax error if `name` is not a valid name.
 
         """
-        # [?!.+\.items\(.*\)]
-        func_match = re.match(r'([_a-zA-Z][_a-zA-Z0-9]*)\((.*)\)', name)
-        # func_match = re.match(r'((?!.+\.items)([_a-zA-Z][_a-zA-Z0-9]*))\((.*)\)', name)
+
+        func_match = re.match(r'([_a-zA-Z][\._a-zA-Z0-9]*)\((.*)\)', name)
         if func_match:
             func_name, func_vars = \
-                func_match.group(1), func_match.group(2).strip().replace(' ', '').split(',')
+                func_match.group(1), remove_all_blank_n_split(func_match.group(2), separator=',')
 
             is_buildin_func = func_name in ['enumerate', 'isinstance', 'list', 'str', 'float', 'int', 'tuple']
-            # if func_name not in ['enu']
             if not is_buildin_func:
-                vars_set.add(func_name)
+                if '.' in func_name:
+                    vars_set.add(func_name.split('.', 1)[0])
+                else:
+                    vars_set.add(func_name)
+
             if func_vars[0]:
                 for _index, _func_var in enumerate(func_vars[:]):
                     r = self._variable(_func_var, vars_set)
@@ -269,6 +278,14 @@ class Templite(object):
 
             func_vars_str = ', '.join(func_vars)
             return 'eval', f'{(func_name if is_buildin_func else ("c_" + func_name))}({func_vars_str})'
+
+        loop_vars_match = re.match(r'[_a-zA-Z][_a-zA-Z0-9]*[\s]*,', name)
+        if loop_vars_match:
+            loop_vars = remove_all_blank_n_split(name, ',')
+            for _index, _func_var in enumerate(loop_vars[:]):
+                r = self._variable(_func_var, vars_set)
+                loop_vars[_index] = f'c_{_func_var}' if r is None else str(r[1])
+            return 'eval', ', '.join(loop_vars)
 
         if not re.match(r'[_a-zA-Z][_a-zA-Z0-9]*$', name) \
             or name in ['if', 'else', 'elif', 'for',
@@ -302,31 +319,3 @@ class Templite(object):
             if callable(value):
                 value = value()
         return value
-
-
-if __name__ == '__main__':
-    templite = Templite('''
-        <h1>Hello {{name}}!</h1>
-        <h1>Hello {{'foo' if (True is True) and foo else (upper('bar') == 1) }}{{ concat('foo', foo, upper('bar')) }}!</h1>
-        {% for index , topic in enumerate(topics, 1) %}
-            <p>{{ index + 1 }} You are interested in {{topic}}.</p>
-        {% endfor %}
-        {% for k , v in dict_obj.items() %}
-            <p>{{ k }} {{ v }}</p>
-        {% endfor %}
-        ''')
-
-    print(templite.strr)
-    # print('=============================')
-
-    text = templite.render({
-        'upper': lambda x: x.upper(),
-        'concat': lambda *args: ';'.join([str(i) for i in args]),
-        'foo': False,
-        'bar': True,
-        'name': 'Ned',
-        'dict_obj': {'foo': 'bar', 'kill': 'dead'},
-        'topics': ['Python', 'Geometry', 'Juggling'],
-    })
-    print(text)
-    print('=============================')

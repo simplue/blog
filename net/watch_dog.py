@@ -2,11 +2,14 @@ import re
 import os
 import time
 import subprocess
-import tornado.ioloop
-import tornado.autoreload
+from tornado import ioloop
+from tornado import autoreload
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVER_FILE = os.path.join(BASE_DIR , 'web_frame.py')
+get_file_path = lambda file_name: os.path.join(BASE_DIR, file_name)
+SERVER_FILE = get_file_path('web_frame.py')
+TEMPLATE_ENGINE_FILE = get_file_path('template_engine.py')
+
 
 def get_pid():
     time.sleep(1)
@@ -58,6 +61,7 @@ def reload_server():
 # https://stackoverflow.com/a/21442489
 if __name__ == '__main__':
     reload_server()
-    tornado.autoreload.start(check_time=500)
-    tornado.autoreload.watch(SERVER_FILE)
-    tornado.ioloop.IOLoop.instance().start()
+    autoreload.start(check_time=500)
+    for file in [SERVER_FILE, TEMPLATE_ENGINE_FILE]:
+        autoreload.watch(file)
+    ioloop.IOLoop.instance().start()

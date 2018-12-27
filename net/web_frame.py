@@ -3,6 +3,7 @@ import time
 import socket
 import logging
 from functools import wraps
+from template_engine import Templite
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 
 SEPARATOR = '\r\n'
@@ -208,6 +209,8 @@ class UserBaseHandler():
         self.__finished = True
 
     def send_all(self):
+        print(self.__head_buffer)
+        print(self.__buffer)
         self.request.send(b''.join(self.__head_buffer))
         self.request.send(b''.join(self.__buffer))
 
@@ -258,13 +261,13 @@ class UserBaseHandler():
         self.set_headers(Location=url)
         self.finish()
 
-    def render(self, template_path):
+    def render(self, template_path, context=None):
         template_full_path = os.path.join(TEMPLATE_DIR, template_path)
         if not os.path.isfile(template_full_path):
             return self.send_error_404()
 
         with open(template_full_path, 'r') as f:
-            content = f.read()
+            content = Templite(f.read()).render(context)
             self.set_headers(**{
                 'Content-Type': 'text/html; encoding=utf8',
                 'Content-Length': len(content),
@@ -297,12 +300,33 @@ class DefaultHandler(UserBaseHandler):
 
 class AfterHandler(UserBaseHandler):
     def get(self):
-        self.text_response(f'<html><body><h1>{self.parsed_request["route"]}</h1></html>')
+        context = {
+            'show_route': self.parsed_request["route"]
+        }
+        self.render('hello.html', context)
 
 
 class IndexHandler(UserBaseHandler):
     def get(self):
-        self.text_response(f'<html><body><h1>{self.parsed_request["route"]}</h1></html>')
+        self.render('hello.html', {
+            'todos': [
+                {
+                    'name': 'ho',
+                    'time': '2017-10-10',
+                    'content': '吃饭',
+                },
+                {
+                    'name': 'ho',
+                    'time': '2017-10-10',
+                    'content': '睡觉',
+                },
+                {
+                    'name': 'ho',
+                    'time': '2017-10-10',
+                    'content': '打豆豆',
+                },
+            ]
+        })
 
 
 user_handlers = {

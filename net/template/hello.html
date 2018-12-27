@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HELLO</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <th>执行人</th>
+        <th>事件</th>
+        <th>时间</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for todo in todos %}
+    <tr>
+        <td>{{ todo.get('name') or '-' }}</td>
+        <td>{{ todo.get('content') or '-' }}</td>
+        <td>{{ todo.get('time') or '-' }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
