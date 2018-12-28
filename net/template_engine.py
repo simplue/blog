@@ -8,15 +8,6 @@ BLOCK_TOKEN_END = '%}'
 COMMENT_TOKEN_START = '{#'
 COMMENT_TOKEN_END = '#}'
 
-# re.split(r"(?s)({{.*?}}|{%.*?%}|{#.*?#})"
-# TOK_REGEX = re.compile(r'(?s)({}.*?{}|{}.*?{}|{}.*?{})'.format(
-#     VAR_TOKEN_START,
-#     VAR_TOKEN_END,
-#     BLOCK_TOKEN_START,
-#     BLOCK_TOKEN_END,
-#     COMMENT_TOKEN_START,
-#     COMMENT_TOKEN_END))
-
 TOK_REGEX = re.compile(
     fr'(?s)({VAR_TOKEN_START}.*?{VAR_TOKEN_END}|{BLOCK_TOKEN_START}.*?{BLOCK_TOKEN_END}|{COMMENT_TOKEN_START}.*?{COMMENT_TOKEN_END})')
 
@@ -27,8 +18,8 @@ def remove_all_blank(s):
     return re.sub(SPACE_REGEX, '', s)
 
 
-def remove_all_blank_n_split(s, separator):
-    return remove_all_blank(s).split(separator)
+def remove_all_blank_n_split(s, separator, max_split=-1):
+    return remove_all_blank(s).split(separator, max_split)
 
 
 def join_n_remove_all_blank(l, separator):
@@ -171,7 +162,6 @@ class Templite(object):
 
         # Split the text to form a list of tokens.
         tokens = re.split(TOK_REGEX, text)
-        # print(tokens)
         for token in tokens:
             if token.startswith(COMMENT_TOKEN_START):
                 # Comment: ignore it and move on.
@@ -232,7 +222,6 @@ class Templite(object):
         tokens = [i for i in re.split(
             r'([_a-zA-Z][_a-zA-Z0-9\.]*\(.*\)|\s+)', expr) if i and i.strip()]
         # tokens = [i for i in re.split(r'([_a-zA-Z\{\[][\'\"\:\,_a-zA-Z0-9]*\}*\]*\.\(.*\)|\s)', expr) if i and i.strip()]
-        print(tokens)
         default_var_set = self.all_vars if var_sets is None else var_sets
         var_sets_separate_index = tokens.index('in') if tokens[0] == 'for' else 0
         if var_sets_separate_index:

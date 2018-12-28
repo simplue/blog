@@ -1,9 +1,12 @@
+import re
 import os
+import json
 import time
 import socket
 import logging
+import traceback
 from functools import wraps
-from template_engine import Templite
+from template_engine import Templite, remove_all_blank, remove_all_blank_n_split, join_n_remove_all_blank
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 
 SEPARATOR = '\r\n'
@@ -16,6 +19,8 @@ logging.getLogger().setLevel('INFO'.upper())
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'template')
+
+fuck_error = lambda: logging.error(traceback.format_exc())
 
 
 def timming(func):
@@ -33,6 +38,23 @@ def timming(func):
     return inner
 
 
+STATUS_CODE_DESC = {
+    200: 'OK',
+    301: 'Move Permanently',
+    302: 'Found',
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    405: 'Method Not Allowed',
+    500: 'Internal Server Error',
+}
+get_desc_by_status_code = lambda code: STATUS_CODE_DESC.get(code, 'WTF?!')
+
+to_bytes = lambda _str: _str.encode('utf-8')
+to_str = lambda _bytes, charset=None: _bytes.decode(charset or 'utf-8')
+_s = to_utf8 = to_str
+_b = to_bytes
 # byte:
 #   https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
 # server-demo:
@@ -51,10 +73,126 @@ class BaseHandler(BaseRequestHandler):
         req_data = []
         while True:
             try:
-                chunk = self.request.recv(MAX_PACKET).decode().strip()
+                chunk = self.request.recv(MAX_PACKET).strip()
                 req_data.append(chunk)
             except socket.timeout:
-                return ''.join(req_data)
+                return b''.join(req_data)
+
+    def parse_body(self, body, header_info):
+        if not body:
+            return {}
+
+        raw_content_type = header_info['headers'].get('content-type')
+        charset = 'utf-8'
+        content_type = raw_content_type
+        if 'charset' in raw_content_type:
+            try:
+                content_type, charset = raw_content_type.split(';')[-1].split('=')[-1]
+            except ValueError:
+                pass
+
+        boundary_match = re.match(r'multipart/form-data;.*boundary=([\-\w]+);?', raw_content_type)
+        boundary = boundary_match.group(1) if boundary_match else None
+
+        parsed_body = None
+        if content_type == 'application/x-www-form-urlencoded':
+            _body = _s(body, charset)
+            pairs = remove_all_blank_n_split(_body, '&')
+            parsed_body = {}
+            for pair in pairs:
+                if not pair:
+                    continue
+                key, value = remove_all_blank_n_split(pair, '=')
+                parsed_body[key] = value
+
+        elif content_type.startswith('multipart/form-data'):
+            if not boundary:
+                return
+            '''
+            Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryrGKCBY7qhFd3TrwA
+            
+            ------WebKitFormBoundaryrGKCBY7qhFd3TrwA
+            Content-Disposition: form-data; name="text"
+            
+            title
+            ------WebKitFormBoundaryrGKCBY7qhFd3TrwA
+            Content-Disposition: form-data; name="file"; filename="chrome.png"
+            Content-Type: image/png
+            
+            PNG ... content of chrome.png ...
+            ------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
+            
+            startswith "--boundary" 
+            endswith "--boundary--"
+            '''
+            logging.info('=================\n\n%s\n\n=================' % (body, ))
+            chunks = body.split(b'--' + _b(boundary))
+            for chunk in chunks:
+                parsed_body = {}
+                if chunk in [b'--', b'']:
+                    continue
+
+                _tmp_file_key = _tmp_form_key = None
+                for line in chunk.split(_b(SEPARATOR)):
+                    if not line:
+                        continue
+
+                    if not _tmp_file_key and not _tmp_form_key:
+                        value_match = re.match(
+                            r'^Content-Disposition: form-data;.*name="([_\.\w]+)"$',
+                            raw_content_type)
+
+                        if value_match:
+                            _tmp_form_key = value_match.group(1)
+                            _tmp_file_key = None
+                            continue
+
+                        file_match = re.match(
+                            r'^Content-Disposition: form-data;.*name="([_\.\w]+)";.*filename="([_\.\w]+)"$',
+                            raw_content_type)
+
+                        if file_match:
+                            _tmp_form_key, _tmp_file_key = value_match.group(1)
+                            continue
+
+
+        elif content_type == 'application/json':
+            parsed_body = json.loads(_s(body), encoding=charset)
+            if isinstance(parsed_body, list):
+                return
+
+        return parsed_body
+
+    def parse_header(self, head):
+        try:
+            _head = head if isinstance(head, str) else _s(head)
+            first_line, raw_headers = _head.split(SEPARATOR, 1)
+            method, route, protocol = first_line.split()
+
+            query = {}
+            if '?' in route:
+                route, query_str = route.split('?', 1)
+                pairs = remove_all_blank_n_split(query_str, '&')
+                for pair in pairs:
+                    if not pair:
+                        continue
+                    key, value = remove_all_blank_n_split(pair, '=')
+                    query[key] = value
+
+            headers = {}
+            for header_line in raw_headers.split(SEPARATOR):
+                head_name, content = remove_all_blank_n_split(header_line, ':', 1)
+                headers[head_name.lower()] = content
+
+            return {
+                'query': query,
+                'headers': headers,
+                'method': method,
+                'route': (route[:-1] if route.endswith('/') else route) or '/',
+                'http_protocol_version': protocol[-3:],
+            }
+        except ValueError:
+            pass
 
     def parse_request(self):
         raw_req = self.get_raw_request()
@@ -62,34 +200,42 @@ class BaseHandler(BaseRequestHandler):
             return
 
         try:
-            head, body = raw_req.split(2 * SEPARATOR, 1)
+            head, body = raw_req.split(2 * _b(SEPARATOR), 1)
         except ValueError:
             head, body = raw_req, None
 
-        try:
-            first_line, raw_headers = head.split(SEPARATOR, 1)
-            method, route, protocol = first_line.split(' ')
-            headers = {i.split(': ', 1)[0]: i.split(': ', 1)[1]
-                       for i in raw_headers.split(SEPARATOR)}
-        except ValueError:
-            return
+        header_info = self.parse_header(head)
+        if header_info is None:
+            return 400
 
-        return {
-            'headers': headers,
-            'method': method,
-            'route': route,
-            'http_protocol_version': protocol[-3:],
-            'body': body,
-        }
+        req_method = header_info['method'].lower()
+        if req_method not in ['get', 'post']:
+            return 405
 
-    def pong(self):
-        self.request.send(f'HTTP/1.0 200 OK{SEPARATOR}Connection: close{2 * SEPARATOR}'.encode())
+        if req_method == 'post':
+            parsed_body = self.parse_body(body, header_info)
+            logging.info(f'parsed_body： {parsed_body}')
+            if parsed_body is None:
+                return 400
+            header_info['body'] = parsed_body
+
+        return header_info
+
+    def pong(self, status_code):
+        self.request.send(_b(f'HTTP/1.0 {status_code} {get_desc_by_status_code(status_code)}{SEPARATOR}Connection: close{2 * SEPARATOR}'))
 
     @timming
     def handle(self):
-        parsed_request = self.parse_request()
+        try:
+            parsed_request = self.parse_request()
+        except:
+            fuck_error()
+            return self.pong(500)
+
         if parsed_request is None:
-            return self.pong()
+            return self.pong(200)
+        elif isinstance(parsed_request, int):
+            return self.pong(parsed_request)
 
         route, method = parsed_request['route'], parsed_request['method']
         handle_class = user_handlers.get(route) or DefaultHandler
@@ -100,8 +246,7 @@ class BaseHandler(BaseRequestHandler):
         try:
             handle_func()
         except:
-            import traceback
-            handler.send_error_500(traceback.format_exc())
+            handler.send_error(500, traceback.format_exc())
 
         if not handler.is_finished():
             handler.finish()
@@ -191,17 +336,10 @@ class UserBaseHandler():
         http_protocol_version = self.parsed_request['http_protocol_version'] \
                                 or self.__default_http_protocol_version
         assert http_protocol_version in ['1.0', '1.1']
-        status_desc = {
-            200: 'OK',
-            301: 'Move Permanently',
-            302: 'Found',
-            404: 'Not Found',
-            405: 'Method Not Allowed',
-            500: 'Internal Server Error',
-        }.get(self.__status_code, 'WTF?!')
 
+        _status_code = self.__status_code
         self.write_head_buffer(''.join([
-            f'HTTP/{http_protocol_version} {self.__status_code} {status_desc}',
+            f'HTTP/{http_protocol_version} {_status_code} {get_desc_by_status_code(_status_code)}',
             SEPARATOR,
             SEPARATOR.join('{}: {}'.format(k, v) for k, v in self.__headers.items()),
             2 * SEPARATOR,
@@ -209,8 +347,6 @@ class UserBaseHandler():
         self.__finished = True
 
     def send_all(self):
-        print(self.__head_buffer)
-        print(self.__buffer)
         self.request.send(b''.join(self.__head_buffer))
         self.request.send(b''.join(self.__buffer))
 
@@ -245,7 +381,7 @@ class UserBaseHandler():
         self.set_status(status_code)
         if body:
             return self.finish(body)
-        self.render(template_path)
+        self.render(template_path, {'request': self.parsed_request})
 
     def send_error_404(self):
         self.send_error(404, template_path='404.html')
@@ -300,10 +436,9 @@ class DefaultHandler(UserBaseHandler):
 
 class AfterHandler(UserBaseHandler):
     def get(self):
-        context = {
-            'show_route': self.parsed_request["route"]
-        }
-        self.render('hello.html', context)
+        self.render('show_route.html', {
+            'route': self.parsed_request["route"]
+        })
 
 
 class IndexHandler(UserBaseHandler):
@@ -326,6 +461,13 @@ class IndexHandler(UserBaseHandler):
                     'content': '打豆豆',
                 },
             ]
+        })
+
+    def post(self):
+        logging.info(self.parsed_request['query'])
+        logging.info(self.parsed_request.get('body'))
+        self.render('show_route.html', {
+            'route': self.parsed_request["route"]
         })
 
 
