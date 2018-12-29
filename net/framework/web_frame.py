@@ -6,7 +6,7 @@ import socket
 import logging
 import traceback
 from functools import wraps
-from template_engine import Templite, remove_all_blank, remove_all_blank_n_split, join_n_remove_all_blank
+from .template_engine import Templite, remove_all_blank_n_split
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 
 SEPARATOR = '\r\n'
@@ -17,8 +17,8 @@ logging.basicConfig(format=FORMAT)
 logging.getLogger().setLevel('INFO'.upper())
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'template')
+STATIC_DIR = os.path.join(BASE_DIR, '..', 'static')
+TEMPLATE_DIR = os.path.join(BASE_DIR, '..', 'template')
 
 fuck_error = lambda: logging.error(traceback.format_exc())
 
@@ -31,7 +31,9 @@ def timming(func):
             req, resp = func(*args, **kwargs)
         except TypeError:
             return
-
+        logging.info(req['query'])
+        logging.info(req.get('body'))
+        logging.info(req.get('files'))
         logging.info(f'{resp["status_code"]} {req["method"]} {req["route"]} {int((time.time() - start) * 1000)}ms')
         return req
 
@@ -63,10 +65,7 @@ _b = to_bytes
 #   https://stackoverflow.com/a/21442489
 # socket reuse:
 #   https://stackoverflow.com/q/17659334
-class BaseHandler(BaseRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.handlers = user_handlers
+class Listener(BaseRequestHandler):
 
     def get_raw_request(self):
         self.request.settimeout(0.001)
@@ -108,7 +107,7 @@ class BaseHandler(BaseRequestHandler):
         elif content_type.startswith('multipart/form-data'):
             if not boundary:
                 return
-            # logging.info('\n=================\n\n%s\n\n=================\n' % (body, ))
+
             parsed_body = {}
             parsed_files = {}
             chunks = body.split(b'--' + _b(boundary))
@@ -202,6 +201,10 @@ class BaseHandler(BaseRequestHandler):
         except ValueError:
             head, body = raw_req, None
 
+        if body:
+            # logging.info(b'\n=================\n\n%s\n\n=================\n' % (body, ))
+            pass
+
         header_info = self.parse_header(head)
         if header_info is None:
             return 400
@@ -220,6 +223,8 @@ class BaseHandler(BaseRequestHandler):
 
     def pong(self, status_code):
         self.request.send(_b(f'HTTP/1.0 {status_code} {get_desc_by_status_code(status_code)}{SEPARATOR}Connection: close{2 * SEPARATOR}'))
+        logging.error(type(self.request))
+        logging.error(dir(self.request))
 
     @timming
     def handle(self):
@@ -235,10 +240,10 @@ class BaseHandler(BaseRequestHandler):
             return self.pong(parsed_request)
 
         route, method = parsed_request['route'], parsed_request['method']
-        handle_class = user_handlers.get(route) or DefaultHandler
+        handle_class = self.handlers.get(route) or self.DefaultHandler
         handler = handle_class(self.request, parsed_request)
 
-        handle_func = handler.get if handle_class is DefaultHandler \
+        handle_func = handler.get if handle_class is self.DefaultHandler \
             else getattr(handler, method.lower())
         try:
             handle_func()
@@ -252,6 +257,29 @@ class BaseHandler(BaseRequestHandler):
         return parsed_request, handler.get_resp_info()
 
 
+class Appication():
+
+    def __init__(self, handlers, default_handlers_cls):
+        self.handlers = handlers
+        self.default_handlers_cls = default_handlers_cls
+
+    def listen(self, address='', port=20000):
+        server = ThreadingTCPServer(
+            (address, port),
+            type('Listener', (Listener,), {
+                'handlers': self.handlers,
+                'DefaultHandler': self.default_handlers_cls,
+            }),
+            False)
+        server.allow_reuse_address = True
+        server.server_bind()
+        server.server_activate()
+        try:
+            server.serve_forever()
+        except:
+            server.shutdown()
+
+
 def no_write_after_finish(func):
     @wraps(func)
     def inner(handler, *args, **kwargs):
@@ -262,7 +290,7 @@ def no_write_after_finish(func):
     return inner
 
 
-class UserBaseHandler():
+class BaseHandler():
 
     def __init__(self, request, parsed_request):
         self.request = request
@@ -314,14 +342,25 @@ class UserBaseHandler():
         if not os.path.isfile(file_path):
             return self.send_error_404()
 
+        ext = file_path.rsplit('.', 1)[-1]
+        if ext in ['png', 'gif', 'jpg', 'ico']:
+            content_type = f'image/{"webp" if ext == "ico" else ext}'
+        elif ext == 'css':
+            content_type = 'text/css; charset=utf-8'
+        elif ext == 'js':
+            content_type = 'text/javascript; charset=utf-8'
+        else:
+            content_type = 'text/html; charset=utf-8'
+
         with open(file_path, 'rb') as f:
             file_content = f.read()
-            ext = file_path.split(".")[-1]
-            self.set_headers(**{
-                'Content-Type': f'image/{"webp" if ext == "ico" else ext}',
-                'Content-Length': len(file_content),
-            })
-            self.finish(file_content)
+
+        self.set_headers(**{
+            'Content-Type': content_type,
+            'Content-Length': len(file_content),
+            # 'Etag': ...
+        })
+        self.finish(file_content)
 
     def finish(self, chunk=None):
         if self.__finished:
@@ -344,8 +383,20 @@ class UserBaseHandler():
         self.__finished = True
 
     def send_all(self):
-        self.request.send(b''.join(self.__head_buffer))
-        self.request.send(b''.join(self.__buffer))
+        all_bytes = b''.join(self.__head_buffer) + b''.join(self.__buffer)
+        times = 0
+        while True:
+            _current = times * MAX_PACKET
+            _chunk = all_bytes[_current: _current + MAX_PACKET]
+            if not _chunk:
+                break
+            self.request.send(_chunk)
+            times += 1
+
+        # def chunks(arr, n):
+        #     return [arr[i:i + n] for i in range(0, len(arr), n)]
+        # for _chunk in chunks(b''.join(self.__head_buffer) + b''.join(self.__buffer), MAX_PACKET):
+        #     self.request.send(_chunk)
 
     @no_write_after_finish
     def set_headers(self, **headers):
@@ -424,63 +475,3 @@ class UserBaseHandler():
 
     def head(self):
         self.send_error_405()
-
-
-class DefaultHandler(UserBaseHandler):
-    def get(self):
-        self.try_file()
-
-
-class AfterHandler(UserBaseHandler):
-    def get(self):
-        self.render('show_route.html', {
-            'route': self.parsed_request["route"]
-        })
-
-
-class IndexHandler(UserBaseHandler):
-    def get(self):
-        self.render('hello.html', {
-            'todos': [
-                {
-                    'name': 'ho',
-                    'time': '2017-10-10',
-                    'content': '吃饭',
-                },
-                {
-                    'name': 'ho',
-                    'time': '2017-10-10',
-                    'content': '睡觉',
-                },
-                {
-                    'name': 'ho',
-                    'time': '2017-10-10',
-                    'content': '打豆豆',
-                },
-            ]
-        })
-
-    def post(self):
-        logging.info(self.parsed_request['query'])
-        logging.info(self.parsed_request.get('body'))
-        logging.info(self.parsed_request.get('files'))
-        self.render('show_route.html', {
-            'route': self.parsed_request["route"]
-        })
-
-
-user_handlers = {
-    '': IndexHandler,
-    '/': IndexHandler,
-    '/after': AfterHandler,
-}
-
-if __name__ == '__main__':
-    server = ThreadingTCPServer(('', 20000), BaseHandler, False)
-    server.allow_reuse_address = True
-    server.server_bind()
-    server.server_activate()
-    try:
-        server.serve_forever()
-    except:
-        server.shutdown()

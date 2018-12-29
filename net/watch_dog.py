@@ -7,8 +7,11 @@ from tornado import autoreload
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 get_file_path = lambda file_name: os.path.join(BASE_DIR, file_name)
-SERVER_FILE = get_file_path('web_frame.py')
-TEMPLATE_ENGINE_FILE = get_file_path('template_engine.py')
+APP_FILE = get_file_path('app.py')
+
+get_frame_path = lambda file_name: os.path.join(BASE_DIR, 'framework', file_name)
+SERVER_FILE = get_frame_path('web_frame.py')
+TEMPLATE_ENGINE_FILE = get_frame_path('template_engine.py')
 
 
 def get_pid():
@@ -29,7 +32,7 @@ def get_pid():
 
 def start_server():
     # subprocess.Popen(f'pipenv run python {SERVER_FILE}')
-    subprocess.Popen(['pipenv', 'run', 'python', SERVER_FILE])
+    subprocess.Popen(['pipenv', 'run', 'python', APP_FILE])
     new_server_pid = get_pid()
     limit = 5
     while not new_server_pid:
@@ -62,6 +65,6 @@ def reload_server():
 if __name__ == '__main__':
     reload_server()
     autoreload.start(check_time=500)
-    for file in [SERVER_FILE, TEMPLATE_ENGINE_FILE]:
+    for file in [SERVER_FILE, TEMPLATE_ENGINE_FILE, APP_FILE]:
         autoreload.watch(file)
     ioloop.IOLoop.instance().start()

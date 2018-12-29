@@ -1,5 +1,4 @@
 import re
-import ast
 
 VAR_TOKEN_START = '{{'
 VAR_TOKEN_END = '}}'
@@ -308,3 +307,28 @@ class Templite(object):
             if callable(value):
                 value = value()
         return value
+
+
+if __name__ == '__main__':
+    '''
+    
+
+    ------WebKitFormBoundaryrGKCBY7qhFd3TrwA
+    Content-Disposition: form-data; name="text"
+
+    title
+    ------WebKitFormBoundaryrGKCBY7qhFd3TrwA
+    Content-Disposition: form-data; name="file"; filename="chrome.png"
+    Content-Type: image/png
+
+    PNG ... content of chrome.png ...
+    ------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
+    '''
+    boundary_match = re.match(r'.+;\s*boundary=([\-\w]+);?', 'Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryrGKCBY7qhFd3TrwA')
+
+    # if not boundary_match:
+    #     return
+    # remove_all_blank_n_split(raw_content_type, 'boundary=')
+
+    boundary = boundary_match.group(1)
+    print(boundary, '====================')
