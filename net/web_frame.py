@@ -80,7 +80,7 @@ class BaseHandler(BaseRequestHandler):
 
     def parse_body(self, body, header_info):
         if not body:
-            return {}
+            return {}, {}
 
         raw_content_type = header_info['headers'].get('content-type')
         charset = 'utf-8'
@@ -94,11 +94,11 @@ class BaseHandler(BaseRequestHandler):
         boundary_match = re.match(r'multipart/form-data;.*boundary=([\-\w]+);?', raw_content_type)
         boundary = boundary_match.group(1) if boundary_match else None
 
-        parsed_body = None
+        parsed_body = parsed_files = None
         if content_type == 'application/x-www-form-urlencoded':
+            parsed_body = {}
             _body = _s(body, charset)
             pairs = remove_all_blank_n_split(_body, '&')
-            parsed_body = {}
             for pair in pairs:
                 if not pair:
                     continue
@@ -108,60 +108,58 @@ class BaseHandler(BaseRequestHandler):
         elif content_type.startswith('multipart/form-data'):
             if not boundary:
                 return
-            '''
-            Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryrGKCBY7qhFd3TrwA
-            
-            ------WebKitFormBoundaryrGKCBY7qhFd3TrwA
-            Content-Disposition: form-data; name="text"
-            
-            title
-            ------WebKitFormBoundaryrGKCBY7qhFd3TrwA
-            Content-Disposition: form-data; name="file"; filename="chrome.png"
-            Content-Type: image/png
-            
-            PNG ... content of chrome.png ...
-            ------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
-            
-            startswith "--boundary" 
-            endswith "--boundary--"
-            '''
-            logging.info('=================\n\n%s\n\n=================' % (body, ))
+            # logging.info('\n=================\n\n%s\n\n=================\n' % (body, ))
+            parsed_body = {}
+            parsed_files = {}
             chunks = body.split(b'--' + _b(boundary))
             for chunk in chunks:
-                parsed_body = {}
                 if chunk in [b'--', b'']:
                     continue
 
-                _tmp_file_key = _tmp_form_key = None
-                for line in chunk.split(_b(SEPARATOR)):
+                _form_key = _file_name = _file_content_type = None
+                chunk_lines = chunk.split(_b(SEPARATOR))
+                for line in chunk_lines:
                     if not line:
                         continue
 
-                    if not _tmp_file_key and not _tmp_form_key:
+                    if not _form_key and not _file_name:
                         value_match = re.match(
-                            r'^Content-Disposition: form-data;.*name="([_\.\w]+)"$',
-                            raw_content_type)
+                            b'^Content-Disposition:\s*form-data;\s*name="([_\w]+)";?$', line)
 
                         if value_match:
-                            _tmp_form_key = value_match.group(1)
-                            _tmp_file_key = None
-                            continue
+                            _form_key = value_match.group(1)
+                            break
 
                         file_match = re.match(
-                            r'^Content-Disposition: form-data;.*name="([_\.\w]+)";.*filename="([_\.\w]+)"$',
-                            raw_content_type)
+                            b'^Content-Disposition:\s*form-data;\s*name="([_\w]+)";\s*filename="([_\.\w]+);?"$', line)
 
                         if file_match:
-                            _tmp_form_key, _tmp_file_key = value_match.group(1)
+                            _form_key, _file_name = file_match.group(1), file_match.group(2)
                             continue
 
+                    if _file_name and not _file_content_type:
+                        content_type_match = re.match(
+                            b'^Content-Type:\s*([\_/\w]+)', line)
+                        if content_type_match:
+                            _file_content_type = content_type_match.group(1)
+                        break
+
+                content = chunk_lines[-2]
+                if _file_name:
+                    parsed_files[_s(_form_key)] = {
+                        'file_name': _s(_file_name) if _file_name is not None else None,
+                        'content_type': _s(_file_content_type) if _file_content_type is not None else None,
+                        'content': content,
+                    }
+                elif _form_key:
+                    parsed_body[_s(_form_key)] = _s(content)
 
         elif content_type == 'application/json':
             parsed_body = json.loads(_s(body), encoding=charset)
             if isinstance(parsed_body, list):
                 return
 
-        return parsed_body
+        return parsed_body, parsed_files
 
     def parse_header(self, head):
         try:
@@ -214,10 +212,9 @@ class BaseHandler(BaseRequestHandler):
 
         if req_method == 'post':
             parsed_body = self.parse_body(body, header_info)
-            logging.info(f'parsed_body： {parsed_body}')
             if parsed_body is None:
                 return 400
-            header_info['body'] = parsed_body
+            header_info['body'], header_info['files'] = parsed_body
 
         return header_info
 
@@ -466,6 +463,7 @@ class IndexHandler(UserBaseHandler):
     def post(self):
         logging.info(self.parsed_request['query'])
         logging.info(self.parsed_request.get('body'))
+        logging.info(self.parsed_request.get('files'))
         self.render('show_route.html', {
             'route': self.parsed_request["route"]
         })
