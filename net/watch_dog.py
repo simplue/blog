@@ -9,10 +9,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 get_file_path = lambda file_name: os.path.join(BASE_DIR, file_name)
 APP_FILE = get_file_path('app.py')
 
-get_frame_path = lambda file_name: os.path.join(BASE_DIR, 'framework', file_name)
-SERVER_FILE = get_frame_path('web_frame.py')
-TEMPLATE_ENGINE_FILE = get_frame_path('template_engine.py')
-
 
 def get_pid():
     time.sleep(1)
@@ -31,7 +27,6 @@ def get_pid():
 
 
 def start_server():
-    # subprocess.Popen(f'pipenv run python {SERVER_FILE}')
     subprocess.Popen(['pipenv', 'run', 'python', APP_FILE])
     new_server_pid = get_pid()
     limit = 5
@@ -61,10 +56,33 @@ def reload_server():
         pass
 
 
+def get_watch_files():
+    this_file_abspath = os.path.abspath(__file__)
+    all_watch_files = []
+
+    for dir, _, files in os.walk('.'):
+        for file in files:
+            _file_abspath = os.path.abspath(os.path.join(dir, file))
+
+            if not _file_abspath.endswith('.py') \
+                or file.endswith('__init__.py') \
+                or this_file_abspath == _file_abspath:
+                continue
+
+            all_watch_files.append(_file_abspath)
+
+    return all_watch_files
+
+
+# https://stackoverflow.com/a/16974952
+def files_auto_reload():
+    autoreload.start(check_time=500)
+    for file in get_watch_files():
+        autoreload.watch(file)
+
+
 # https://stackoverflow.com/a/21442489
 if __name__ == '__main__':
+    files_auto_reload()
     reload_server()
-    autoreload.start(check_time=500)
-    for file in [SERVER_FILE, TEMPLATE_ENGINE_FILE, APP_FILE]:
-        autoreload.watch(file)
     ioloop.IOLoop.instance().start()

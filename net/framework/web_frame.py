@@ -17,8 +17,8 @@ logging.basicConfig(format=FORMAT)
 logging.getLogger().setLevel('INFO'.upper())
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, '..', 'static')
-TEMPLATE_DIR = os.path.join(BASE_DIR, '..', 'template')
+# STATIC_DIR = os.path.join(BASE_DIR, '..', 'static')
+# TEMPLATE_DIR = os.path.join(BASE_DIR, '..', 'template')
 
 fuck_error = lambda: logging.error(traceback.format_exc())
 
@@ -223,8 +223,6 @@ class Listener(BaseRequestHandler):
 
     def pong(self, status_code):
         self.request.send(_b(f'HTTP/1.0 {status_code} {get_desc_by_status_code(status_code)}{SEPARATOR}Connection: close{2 * SEPARATOR}'))
-        logging.error(type(self.request))
-        logging.error(dir(self.request))
 
     @timming
     def handle(self):
@@ -240,15 +238,23 @@ class Listener(BaseRequestHandler):
             return self.pong(parsed_request)
 
         route, method = parsed_request['route'], parsed_request['method']
-        handle_class = self.handlers.get(route) or self.DefaultHandler
-        handler = handle_class(self.request, parsed_request)
+        for resolver in self.handlers:
+            _pattern, _handle_class = resolver
+            if not _pattern.endswith('$'):
+                _pattern = _pattern + '$'
+            _match_obj = re.match(_pattern, route)
+            if _match_obj:
+                handle_class = _handle_class
+                _match_obj.groups()
+                break
+        else:
+            return self.pong(400)
 
-        handle_func = handler.get if handle_class is self.DefaultHandler \
-            else getattr(handler, method.lower())
+        handler = handle_class(self.request, parsed_request, self.settings)
         try:
-            handle_func()
+            getattr(handler, method.lower())()
         except:
-            handler.send_error(500, traceback.format_exc())
+            handler.send_error(500, traceback.format_exc() if self.settings['debug'] else None)
 
         if not handler.is_finished():
             handler.finish()
@@ -259,16 +265,18 @@ class Listener(BaseRequestHandler):
 
 class Appication():
 
-    def __init__(self, handlers, default_handlers_cls):
+    def __init__(self, handlers, settings=None):
         self.handlers = handlers
-        self.default_handlers_cls = default_handlers_cls
+        self.settings = settings or {
+            'debug': False,
+        }
 
     def listen(self, address='', port=20000):
         server = ThreadingTCPServer(
             (address, port),
             type('Listener', (Listener,), {
                 'handlers': self.handlers,
-                'DefaultHandler': self.default_handlers_cls,
+                'settings': self.settings,
             }),
             False)
         server.allow_reuse_address = True
@@ -292,9 +300,10 @@ def no_write_after_finish(func):
 
 class BaseHandler():
 
-    def __init__(self, request, parsed_request):
+    def __init__(self, request, parsed_request, settings):
         self.request = request
         self.parsed_request = parsed_request
+        self.settings = settings
         self.__buffer = []
         self.__head_buffer = []
         self.__headers = {}
@@ -337,7 +346,7 @@ class BaseHandler():
 
     def try_file(self):
         file_path = os.path.join(
-            STATIC_DIR,
+            self.settings['STATIC_DIR'],
             self.parsed_request['route'][1:].replace('static/', ''))
         if not os.path.isfile(file_path):
             return self.send_error_404()
@@ -446,7 +455,7 @@ class BaseHandler():
         self.finish()
 
     def render(self, template_path, context=None):
-        template_full_path = os.path.join(TEMPLATE_DIR, template_path)
+        template_full_path = os.path.join(self.settings['TEMPLATE_DIR'], template_path)
         if not os.path.isfile(template_full_path):
             return self.send_error_404()
 

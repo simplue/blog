@@ -1,5 +1,8 @@
+import os
 import logging
 from framework.web_frame import BaseHandler, Appication
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class DefaultHandler(BaseHandler):
@@ -43,8 +46,13 @@ class IndexHandler(BaseHandler):
 
 
 if __name__ == '__main__':
-    Appication({
-        '': IndexHandler,
-        '/': IndexHandler,
-        '/after': AfterHandler,
-    }, DefaultHandler).listen()
+    settings = {
+        'debug': True,
+        'STATIC_DIR': os.path.join(BASE_DIR, 'static'),
+        'TEMPLATE_DIR': os.path.join(BASE_DIR, 'template'),
+    }
+    Appication([
+        ('/', IndexHandler),
+        ('/after', AfterHandler),
+        ('.*', DefaultHandler),
+    ], settings).listen()
