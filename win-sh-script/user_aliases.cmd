@@ -60,7 +60,7 @@ exportshell=cat c:\Users\dell\cmder_mini\config\user_aliases.cmd > c:\personal_p
 server=http-server
 serverhere=http-server -c-1
 adminlte=start chrome "http://localhost:9720/pages/UI/icons.html" && http-server -p 9720 "C:\pacofuture\AdminLTE"
-
+navserver=http-server -sp 80 "C:\Users\dell\Desktop"
 
 ;= ================================================================
 ;= virtual machine
@@ -70,6 +70,10 @@ sendtovm=scp $1 ho@vm:$2
 sendfromvm=scp ho@vm:$1 $2
 sendfoldertovm=scp -r $1 ho@vm:$2
 sendfolderfromvm=scp -r ho@vm:$1 $2
+vmstart=vmrun -T player start "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" nogui
+vmsuspend=vmrun player suspend "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
+vmreset=vmrun player reset "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
+vmstop=vmrun player stop "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
 
 ;= ================================================================
 ;= python

@@ -7,6 +7,12 @@
 # vmware 瘦身
 在`.vmx`配置文件中加入`mainMem.useNamedFile=FALSE`
 
+# vmware 命令行启动
+需要安装`vix api`，找到一个可以下载 VIX 的版本，在`Driver & Tools`一栏下载。安装后加入环境变量即可使用`vmrun`等命令。如 `vmrun -T player start "C:\path\to\*.vmx" nogui`
+
+参考
+https://blog.csdn.net/devper/article/details/54089342
+
 # virtualbox 修改虚拟机存放路径
 virtualbox >> 管理 >> 全局设定 >> 默认虚拟电脑路径
 
