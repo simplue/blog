@@ -80,3 +80,10 @@ vmstop=vmrun player stop "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server
 ;= ================================================================
 rmpipenv=pipenv --rm && rm -f Pipfile Pipfile.lock
 newpipenv=bash -c 'if [ -e "/c/Python/$1/python.exe" ]; then pipenv --python "C:/Python/$1/python.exe"; sed -i "s/pypi.org\/simple/mirrors.aliyun.com\/pypi\/simple\//g" Pipfile; if [ -e "requirements.txt" ]; then echo "detect requirements.txt installing..."; pipenv install -r requirements.txt; fi; cat Pipfile; pipenv graph; pipenv run Python -V; else echo "version $1 not found,download: https://npm.taobao.org/mirrors/python/$1/"; fi'
+
+;= ================================================================
+;= netstat
+;= ================================================================
+ping114=ping 114.114.114.114 -t
+pingali=ping 223.5.5.5 -t
+pingbaidu=ping www.baidu.com -t

@@ -17,9 +17,6 @@ logging.basicConfig(format=FORMAT)
 logging.getLogger().setLevel('INFO'.upper())
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# STATIC_DIR = os.path.join(BASE_DIR, '..', 'static')
-# TEMPLATE_DIR = os.path.join(BASE_DIR, '..', 'template')
-
 fuck_error = lambda: logging.error(traceback.format_exc())
 
 
@@ -31,9 +28,9 @@ def timming(func):
             req, resp = func(*args, **kwargs)
         except TypeError:
             return
-        logging.info(req['query'])
-        logging.info(req.get('body'))
-        logging.info(req.get('files'))
+        # logging.info(req['query'])
+        # logging.info(req.get('body'))
+        # logging.info(req.get('files'))
         logging.info(f'{resp["status_code"]} {req["method"]} {req["route"]} {int((time.time() - start) * 1000)}ms')
         return req
 
@@ -57,6 +54,8 @@ to_bytes = lambda _str: _str.encode('utf-8')
 to_str = lambda _bytes, charset=None: _bytes.decode(charset or 'utf-8')
 _s = to_utf8 = to_str
 _b = to_bytes
+
+
 # byte:
 #   https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
 # server-demo:
