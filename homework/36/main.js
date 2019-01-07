@@ -34,22 +34,22 @@
 
 
 !(() => {
-  let ajax = function ({url, method, body}) {
-    return new Promise(function (resolve, reject) {
-      let request = new XMLHttpRequest()
-      request.open(method, url)
-      request.onreadystatechange = () => {
-        if (request.readyState === 4) {
-          if (request.status >= 400) {
-            reject(request)
-          } else if (request.status >= 200) {
-            resolve(request.responseText)
-          }
+let ajax = function ({url, method, body}) {
+  return new Promise(function (resolve, reject) {
+    let request = new XMLHttpRequest()
+    request.open(method, url)
+    request.onreadystatechange = () => {
+      if (request.readyState === 4) {
+        if (request.status >= 400) {
+          reject(request)
+        } else if (request.status >= 200) {
+          resolve(request.responseText)
         }
       }
-      request.send(body)
-    })
-  }
+    }
+    request.send(body)
+  })
+}
 
   ajax({
     url: '/',
