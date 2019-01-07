@@ -40,6 +40,7 @@ ll=ls -al
 open=start
 edit=start notepad++ $1
 hosts=start notepad++ c:\Windows\System32\drivers\etc\hosts
+showinexplorer=start .
 
 ;= ================================================================
 ;= git

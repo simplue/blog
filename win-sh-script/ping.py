@@ -15,6 +15,7 @@ PING_FILE_BASE_DIR = os.path.join('.', 'ping')
 if not os.path.isdir(PING_FILE_BASE_DIR):
     os.mkdir(PING_FILE_BASE_DIR)
 
+gbk_to_utf8 = lambda s: s.decode('gbk').encode('utf-8').strip()
 
 def path_of_ping_file(name):
     return os.path.join(PING_FILE_BASE_DIR, name)
@@ -27,9 +28,6 @@ def path_of_ping_json():
 def path_of_ping_raw(name):
     return path_of_ping_file('{}.txt'.format(name))
 
-
-# def gbk_to_utf8(s):
-gbk_to_utf8 = lambda s: s.decode('gbk').encode('utf-8').strip()
 
 def write_ping_info():
     with open('hosts.json', 'r') as f:
@@ -49,13 +47,10 @@ def write_ping_info():
                 }
                 continue
 
-
-            # if (len(lines) - cnt) == 5:
-            #     _min = _avg = _max = None
-            #     loss = 100
             try:
                 r = re.match(r'最短 = (\d+)ms，最长 = (\d+)ms，平均 = (\d+)ms', gbk_to_utf8(lines[-1]))
-                if r is None: return None
+                if r is None:
+                    return None
                 _min, _max, _avg = [int(i) for i in r.groups()]
                 r = re.match(r'数据包: 已发送 = (\d+)，已接收 = (\d+)，丢失 = (\d+) \((\d+)% 丢失\)，', gbk_to_utf8(lines[-3]))
                 _, _, _, _loss = r.groups()
