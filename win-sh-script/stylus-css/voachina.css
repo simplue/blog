@@ -1,0 +1,98 @@
+/* 正则 https://www.chinavoa.com\/show(.+)*/
+
+div#_dict_layer,
+.btn_zhankai,
+#rightContainer img,
+#rightContainer > *:not(#content),
+#content > *:not(#tab_fanyi_con1),
+body > *:not(:nth-child(11)) {
+    display: none !important;
+}
+/*
+// ==UserScript==
+// @name         New Userscript
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  try to take over the world!
+// @author       You
+// @match        *://www.chinavoa.com/show-*.html
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    // Your code here...
+    document.querySelector('#tab_fanyi_con1 > div').remove()
+})();
+*/
+
+html {
+    background-color: #F5F5D6;
+}
+
+/* div#_dict_layer, */
+.cyxy-function.cyxy-trs-source,
+st-div#__selection-translator__ {
+    display: block !important;
+}
+
+.cyxy-function.cyxy-trs-source {
+    /*     position: absolute; */
+    /*     bottom: 0px; */
+    /*     left: 100px; */
+    right: 700px;
+}
+
+iframe {
+    height: 400px;
+}
+
+#rightContainer {
+    /*     margin: 0; */
+    width: 700px;
+    position: absolute;
+    left: 300px;
+    /*     right: 100px; */
+}
+
+#content {
+    font-size: 16px;
+}
+
+p.cyxy-trs-source.cyxy-trs-target:nth-child(2) {
+    position: relative;
+    left: 100%;
+    top: -20px;
+}
+
+p.cyxy-trs-source.cyxy-trs-target:not(:nth-child(2)) {
+    position: relative;
+    left: 100%;
+    top: -50px;
+}
+
+p.cyxy-trs-source.cyxy-trs-source-ted:not(:first-child) {
+    position: relative;
+    top: 18px;
+}
+
+div#tab_fanyi_con1 > div:after {
+    content: '          ';
+    margin-bottom: 49px;
+}
+
+div#tab_fanyi_con1 > p {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+div#tab_fanyi_con1 > p:nth-child(odd):not(.cyxy-trs-source) {
+    position: relative;
+    left: 100%;
+    top: -29px;
+}
+
+div#tab_fanyi_con1 > p:nth-child(even):not(.cyxy-trs-source) {
+    position: relative;
+    top: 18px;
+}
