@@ -1,0 +1,55 @@
+div#_dict_layer,
+.btn_zhankai,
+#rightContainer img,
+#rightContainer > *:not(#content),
+#content > *:not(#tab_fanyi_con1),
+body.vsc-initialized > *:not(:nth-child(11)) {
+    display: none !important;
+}
+
+html {
+    background-color: #F5F5D6;
+}
+
+.saladict-DIV,
+.cyxy-function.cyxy-trs-source,
+#__selection-translator__ {
+    display: block !important;
+}
+
+#rightContainer {
+    position: absolute;
+    right: 300px;
+}
+
+#content {
+    font-size: 16px;
+}
+
+.clearfix::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.translated > .group > p {
+    padding: 0 !important;
+    width: 50%;
+    float: left;
+}
+
+.translated > .group > p:nth-child(2) {
+    float: right;
+    position: relative;
+    right: -20px;
+}
+
+.translated > .group {
+    margin-bottom: 20px;
+}
+
+.rawEnglish {
+    max-width: 600px;
+    left: 400px;
+    position: relative;
+}
