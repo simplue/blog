@@ -72,9 +72,9 @@ sendfromvm=scp ho@vm:$1 $2
 sendfoldertovm=scp -r $1 ho@vm:$2
 sendfolderfromvm=scp -r ho@vm:$1 $2
 vmstart=vmrun -T player start "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" nogui
-vmsuspend=vmrun player suspend "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
-vmreset=vmrun player reset "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
-vmstop=vmrun player stop "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
+vmsuspend=vmrun suspend "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
+vmreset=vmrun reset "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
+vmstop=vmrun stop "C:\Users\dell\Documents\Virtual Machines\Ubuntu Server 170717\Ubuntu Server 170717.vmx" hard
 
 ;= ================================================================
 ;= python
