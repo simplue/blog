@@ -35,7 +35,7 @@ index-url = https://mirrors.aliyun.com/pypi/simple/
 extra-index-url = https://mirrors.ustc.edu.cn/pypi/web/simple/
 				https://pypi.doubanio.com/simple/
 				https://pypi.tuna.tsinghua.edu.cn/simple/" > $pip_conf_file \
-	&& pip3 install --user -U pipenv
+	&& pip3 install --user -U pipenv \
 	&& curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
 	&& sudo add-apt-repository \
 		"deb [arch=amd64] https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/ubuntu \
