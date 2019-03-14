@@ -28,13 +28,11 @@ sudo apt update \
 	&& mkdir -p $pip_folder \
 	&& echo "[global]
 timeout = 20
-
 index-url = https://mirrors.aliyun.com/pypi/simple/
 
 [install]
 extra-index-url = https://mirrors.ustc.edu.cn/pypi/web/simple/
-				https://pypi.doubanio.com/simple/
-				https://pypi.tuna.tsinghua.edu.cn/simple/" > $pip_conf_file \
+    https://pypi.doubanio.com/simple/" > $pip_conf_file \
 	&& pip3 install --user -U pipenv \
 	&& curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
 	&& sudo add-apt-repository \
@@ -46,6 +44,17 @@ extra-index-url = https://mirrors.ustc.edu.cn/pypi/web/simple/
 	&& curl -L https://get.daocloud.io/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m) > /tmp/docker-compose \
 	&& sudo cp /tmp/docker-compose /usr/local/bin/docker-compose \
 	&& sudo chmod +x /usr/local/bin/docker-compose \
-	&& sudo sudo passwd ubuntu \
-	&& sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+	&& sudo echo "{
+    "registry-mirrors": ["https://registry.docker-cn.com"]
+}" > /etc/docker/daemon.json \
+	&& sudo usermod -aG docker $USER \
+	&& sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+	&& git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+	&& echo "source ${(q-)PWD}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc \
+	&& source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+	&& git config --add oh-my-zsh.hide-status 1 \
+	&& git config --add oh-my-zsh.hide-dirty 1 \
+    && sudo sudo passwd ubuntu
+	
+
 	
