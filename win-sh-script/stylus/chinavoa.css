@@ -1,9 +1,12 @@
-div#_dict_layer,
 .btn_zhankai,
 #rightContainer img,
 #rightContainer > *:not(#content),
 #content > *:not(#tab_fanyi_con1),
 body.vsc-initialized > *:not(:nth-child(11)) {
+    display: none;
+}
+
+#_dict_layer {
     display: none !important;
 }
 
@@ -11,19 +14,21 @@ html {
     background-color: #F5F5D6;
 }
 
+#pai,
 .saladict-DIV,
-.cyxy-function.cyxy-trs-source,
+.cyxy-function,
 #__selection-translator__ {
     display: block !important;
 }
 
 #rightContainer {
     position: absolute;
-    right: 300px;
+    left: 200px;
 }
 
 #content {
-    font-size: 16px;
+    font-size: 20px;
+    font-family: Georgia;
 }
 
 .clearfix::after {
@@ -49,7 +54,23 @@ html {
 }
 
 .rawEnglish {
-    max-width: 600px;
-    left: 400px;
+    max-width: 1200px;
+    left: -90px;
     position: relative;
+}
+
+#pai {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    font-size: 30px;
+    padding: 10px 20px;
+    border-radius: 50%;
+    background-color: #aaa;
+    color: white;
+    cursor: pointer;
+}
+
+#pai::after {
+    content: 'P';
 }
