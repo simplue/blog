@@ -5,7 +5,9 @@
 // @description  try to take over the world!
 // @author       You
 // @match        http*://www.chinavoa.com/show-*.html
+// @match        http*://m.chinavoa.com/show-*.html
 // @match        http*://www.chinavoa.com/list-*.html
+// @match        http*://m.chinavoa.com/list-*.html
 // @grant        none
 // ==/UserScript==
 
@@ -20,6 +22,12 @@
         document.head.appendChild(link);
     }()
 
+    try {
+        location.href.match('http://m.chinavoa.com/show-').length
+        location.href = location.href.replace('//m', '//www')
+    } catch (e) {
+        // pass
+    }
 
     // Your code here...
     document.querySelector('#content').childNodes.forEach(function (n) {
