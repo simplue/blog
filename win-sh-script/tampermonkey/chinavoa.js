@@ -14,10 +14,10 @@
 (function () {
 
     'use strict';
-    document.title = 'Google'
+    document.title = 'V'
     !function () {
         var link = document.createElement("link");
-        link.href = "https://www.google.com/favicon.ico";
+        link.href = "https://favicon.yandex.net/favicon/voanews.com";
         link.rel = "shortcut icon";
         document.head.appendChild(link);
     }()
@@ -44,8 +44,8 @@
         e.parentNode.remove()
     })
     document.querySelectorAll('p > strong').forEach(function (e) {
-        console.dir(e)
         if (e.innerText.startsWith('______')) {
+            console.dir(e)
             e.parentNode.remove()
         }
 
