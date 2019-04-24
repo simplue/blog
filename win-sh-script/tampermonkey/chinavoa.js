@@ -8,97 +8,128 @@
 // @match        http*://m.chinavoa.com/show-*.html
 // @match        http*://www.chinavoa.com/list-*.html
 // @match        http*://m.chinavoa.com/list-*.html
+// @require      https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js
+// @require      file://d:\tampermonkey\chinavoa.js
 // @grant        none
 // ==/UserScript==
 
 (function () {
+    main()
+})();
 
-    'use strict';
-    document.title = 'V'
+var main = function () {
+    var $contentContainer = $('#tab_fanyi_con1')
+    var translated = $('#tab_fanyi_1').length > 0
+
+    var setTitle = function (title) {
+        document.title = title
+    }
+
+    var reload = function () {
+        var _newBlock = newBlock()
+        var contentSelector = '#tab_fanyi_con1'
+        var contentBlockClassList = ['group', 'clearfix']
+        var contentRawChildNodeName = 'P'
+        $(`${contentSelector} > *`).each(function () {
+            var el = this
+            if (el.nodeName !== contentRawChildNodeName) {
+                return $(this).appendTo(contentSelector)
+            }
+
+            if (_newBlock.children().length > 0) {
+                _newBlock.append(el).appendTo(contentSelector)
+                _newBlock = newBlock()
+            } else {
+                _newBlock.addClass(contentBlockClassList).append(el)
+            }
+        })
+
+        if (_newBlock.children().length > 0) {
+            _newBlock.appendTo(contentSelector)
+        }
+    }
+
+    var chongpai = function () {
+        $contentContainer.addClass('translated')
+        reload()
+    }
+
+    var caiyun = function () {
+        // return
+        try {
+            var trs = document.createElement('script');
+            trs.type = 'text/javascript';
+            trs.charset = 'UTF-8';
+            trs.src = '//caiyunapp.com/dest/trs.js';
+            document.body.appendChild(trs);
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+
+    document.querySelectorAll('a').forEach(function (e) {
+        e.target = '_blank';
+        e.href = e.href.replace('//m.chinavoa.com/show-', '//www.chinavoa.com/show-')
+    })
+
     !function () {
-        var link = document.createElement("link");
-        link.href = "https://favicon.yandex.net/favicon/voanews.com";
-        link.rel = "shortcut icon";
+        var link = document.createElement('link');
+        link.href = 'https://favicon.yandex.net/favicon/voanews.com';
+        link.rel = 'shortcut icon';
         document.head.appendChild(link);
     }()
 
     try {
-        location.href.match('http://m.chinavoa.com/show-').length
-        location.href = location.href.replace('//m', '//www')
-    } catch (e) {
-        // pass
-    }
-
-    // Your code here...
-    document.querySelector('#content').childNodes.forEach(function (n) {
-        if (n.nodeName !== 'div') {
-            try {
-                n.parentNode.removeChild(n)
-            } catch (e) {
-            }
-        }
-    })
-
-    document.querySelector('#tab_fanyi_con1 > div').remove()
-    document.querySelectorAll('p > img').forEach(function (e) {
-        e.parentNode.remove()
-    })
-    document.querySelectorAll('p > strong').forEach(function (e) {
-        if (e.innerText.startsWith('______')) {
-            console.dir(e)
-            e.parentNode.remove()
-        }
-
-    })
-    document.querySelectorAll('p').forEach(function (e) {
-        if (!e.textContent.trim()) {
-            e.remove()
-        }
-    })
-
-    function newDiv() {
-        var __div = document.createElement('div')
-        __div.classList.add('group')
-        __div.classList.add('clearfix')
-        return __div
-    }
-
-    function chongpai() {
-        var arr = []
-
-        contentContainer.classList.add('translated')
-        var _div = newDiv()
-        document.querySelectorAll('#tab_fanyi_con1 > p').forEach(function (e) {
-            arr.push(e)
-            if (arr.length > 1) {
-                _div.appendChild(arr.pop())
-                _div.appendChild(arr.pop())
-                contentContainer.appendChild(_div)
-                _div = newDiv()
+        setTitle(document.querySelector('#tab_fanyi_con1 p > strong').innerText)
+        $('body > *:not(.area)').remove()
+        $('body > .containter').remove()
+        $('#rightContainer > *:not(#content)').remove()
+        $('#content > *:not(.Showbox)').remove()
+        $('a.btn_zhankai').remove()
+        $('#content').contents().filter(function () {
+            return this.nodeType === 3
+        }).remove()
+        $('p > strong').filter(function () {
+            var el = this
+            if (el.innerText.endsWith('___')) {
+                el.innerText = '________________________________'
+                var elP = $(el).parent()
+                elP.clone().insertAfter(elP)
             }
         })
+        $('p').filter(function () {
+            return this.children.length === 0 && !this.innerText.trim()
+        }).remove()
+        $('#tab_fanyi_con1 > div').remove()
 
-        if (arr.length > 0) {
-            _div = newDiv()
-            _div.appendChild(arr.pop())
-            contentContainer.appendChild(_div)
+        $('p > img').filter(function () {
+            var $el = $(this)
+            $el.parent().replaceWith($('<div/>', {
+                class: 'reload-block',
+                style: 'text-align: center',
+            }).append($el.clone()))
+        })
+    } catch (e) {
+        setTitle('VOA')
+    }
+
+    var newBlock = function () {
+        return $('<div/>')
+    }
+    if (translated) {
+        chongpai()
+    } else if ($contentContainer.length > 0) {
+        $contentContainer.addClass('rawEnglish')
+        caiyun()
+    }
+
+    $(document).keyup(function (e) {
+        if (e.key === 'r') {
+            chongpai()
+            $('body > *:not(.area)').remove()
+        } else if (e.key === 't') {
+            caiyun()
         }
-    }
-
-    var contentContainer = document.querySelector('#tab_fanyi_con1')
-
-    if (document.querySelector('#tab_fanyi_1')) {
-        chongpai()
-    } else {
-        contentContainer.classList.add('rawEnglish')
-    }
-
-    var pai = document.createElement('div')
-    pai.id = 'pai'
-    pai.onclick = function () {
-        chongpai()
-    }
-
-    document.body.appendChild(pai)
-
-})();
+    })
+}

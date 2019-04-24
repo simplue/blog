@@ -1,15 +1,3 @@
-.btn_zhankai,
-#rightContainer img,
-#rightContainer > *:not(#content),
-#content > *:not(#tab_fanyi_con1),
-body.vsc-initialized > *:not(:nth-child(11)) {
-    display: none;
-}
-
-#_dict_layer {
-    display: none !important;
-}
-
 html {
     background-color: #F5F5D6;
 }
@@ -23,7 +11,7 @@ html {
 
 #rightContainer {
     position: absolute;
-    left: 200px;
+    left: 50px;
 }
 
 #content {
@@ -39,38 +27,37 @@ html {
 
 .translated > .group > p {
     padding: 0 !important;
-    width: 50%;
-    float: left;
+    width: 60%;
+    float: right;
 }
 
 .translated > .group > p:nth-child(2) {
-    float: right;
+    /*     float: right; */
     position: relative;
-    right: -20px;
+    right: 20px;
+    width: 40%;
 }
 
 .translated > .group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .rawEnglish {
-    max-width: 1200px;
-    left: -90px;
-    position: relative;
+    /*     max-width: 800px; */
+    /*     left: 550px; */
+    /*     position: relative; */
 }
 
-#pai {
-    position: fixed;
-    bottom: 20px;
-    left: 1300px;
-    font-size: 30px;
-    padding: 10px 20px;
-    border-radius: 50%;
-    background-color: #aaa;
-    color: white;
-    cursor: pointer;
+#rightContainer {
+    width: 1300px;
 }
 
-#pai::after {
-    content: 'R';
+.cyxy-trs-target {
+    background-color: transparent;
+}
+
+#content img {
+    float: none;
+    width: 600px !important;
+    height: auto !important;
 }
