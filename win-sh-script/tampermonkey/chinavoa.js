@@ -18,10 +18,21 @@
 })();
 
 var main = function () {
+    var url = location.href
+    if (RegExp('m.chinavoa.com/show-').test(url) || RegExp('m.chinavoa.com/index.php').test(url)) {
+        return location.href = url.replace('//m', '//www')
+    }
+
     var $contentContainer = $('#tab_fanyi_con1')
     var translated = $('#tab_fanyi_1').length > 0
 
     var setTitle = function (title) {
+        if (title === 'VOA') {
+            var _arr = document.title.split(':')
+            var _title = _arr[_arr.length - 1]
+            var _arr_pre = _title.split('-')
+            return document.title = _arr_pre[0]
+        }
         document.title = title
     }
 
@@ -67,10 +78,10 @@ var main = function () {
         }
     }
 
-
     document.querySelectorAll('a').forEach(function (e) {
         e.target = '_blank';
         e.href = e.href.replace('//m.chinavoa.com/show-', '//www.chinavoa.com/show-')
+        e.href = e.href.replace('//m.chinavoa.com/index.php', '//www.chinavoa.com/index.php')
     })
 
     !function () {
@@ -80,8 +91,13 @@ var main = function () {
         document.head.appendChild(link);
     }()
 
-    try {
-        setTitle(document.querySelector('#tab_fanyi_con1 p > strong').innerText)
+    if ($contentContainer.length) {
+        var titleEl = document.querySelector('#tab_fanyi_con1 p > strong')
+        if (titleEl) {
+            setTitle(titleEl.innerText)
+        } else {
+            setTitle('VOA')
+        }
         $('body > *:not(.area)').remove()
         $('body > .containter').remove()
         $('#rightContainer > *:not(#content)').remove()
@@ -99,9 +115,10 @@ var main = function () {
             }
         })
         $('p').filter(function () {
-            return this.children.length === 0 && !this.innerText.trim()
+            return !this.innerText.trim()
+            // return this.children.length === 0 && !this.innerText.trim()
         }).remove()
-        $('#tab_fanyi_con1 > div').remove()
+        $('#tab_fanyi_con1 > *:not(p)').remove()
 
         $('p > img').filter(function () {
             var $el = $(this)
@@ -110,7 +127,7 @@ var main = function () {
                 style: 'text-align: center',
             }).append($el.clone()))
         })
-    } catch (e) {
+    } else {
         setTitle('VOA')
     }
 
@@ -127,7 +144,7 @@ var main = function () {
     $(document).keyup(function (e) {
         if (e.key === 'r') {
             chongpai()
-            $('body > *:not(.area)').remove()
+            // $('body > *:not(.area)').remove()
         } else if (e.key === 't') {
             caiyun()
         }

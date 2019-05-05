@@ -32,7 +32,7 @@ html {
 }
 
 .translated > .group > p:nth-child(2) {
-    /*     float: right; */
+/*     float: right; */
     position: relative;
     right: 20px;
     width: 40%;
@@ -43,9 +43,9 @@ html {
 }
 
 .rawEnglish {
-    /*     max-width: 800px; */
-    /*     left: 550px; */
-    /*     position: relative; */
+/*     max-width: 800px; */
+/*     left: 550px; */
+/*     position: relative; */
 }
 
 #rightContainer {
@@ -58,6 +58,14 @@ html {
 
 #content img {
     float: none;
-    width: 600px !important;
-    height: auto !important;
+    width: 600px!important;
+    height: auto!important;
+}
+
+#tab_fanyi_con1 > div:first-child > p {
+/*     font-weight: bold; */
+}
+
+.layui-m-layer {
+/*     display: none;    */
 }
