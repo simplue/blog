@@ -42,10 +42,10 @@ html {
     margin-bottom: 15px;
 }
 
-.rawEnglish {
-/*     max-width: 800px; */
-/*     left: 550px; */
-/*     position: relative; */
+.rawEnglish  {
+    max-width: 800px;
+    left: 550px;
+    position: relative;
 }
 
 #rightContainer {

@@ -29,9 +29,11 @@ var main = function () {
     var setTitle = function (title) {
         if (title === 'VOA') {
             var _arr = document.title.split(':')
-            var _title = _arr[_arr.length - 1]
-            var _arr_pre = _title.split('-')
-            return document.title = _arr_pre[0]
+            if (_arr.length > 1) {
+                var _title = _arr[_arr.length - 1]
+                var _arr_pre = _title.split('-')
+                return document.title = _arr_pre[0]
+            }
         }
         document.title = title
     }
@@ -62,6 +64,7 @@ var main = function () {
 
     var chongpai = function () {
         $contentContainer.addClass('translated')
+        $contentContainer.removeClass('rawEnglish')
         reload()
     }
 
