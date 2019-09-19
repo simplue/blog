@@ -27,6 +27,10 @@
 |Process Explorer|https://docs.microsoft.com/zh-cn/sysinternals/downloads/process-explorer|
 |SpaceSniffer|http://www.uderzo.it/main_products/space_sniffer/download.html|
 |Intel® XTU|https://downloadcenter.intel.com/download/24075/Intel-Extreme-Tuning-Utility-Intel-XTU-|
+|Docker Desktop on Windows|https://docs.docker.com/toolbox/toolbox_install_windows/<br>https://docs.docker.com/docker-for-windows/install/<br>https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe (old version)|
+|SimpleDnsCrypt|https://github.com/bitbeans/SimpleDnsCrypt/releases|
+|AuroraDNS|https://github.com/mili-tan/AuroraDNS.GUI/releases|
+|Telegram|https://telegram.org/apps|
 
 # 其他
 |软件|链接|说明|
