@@ -10,20 +10,23 @@
 |VMware Workstation Player|https://www.vmware.com/go/tryplayer/|
 |Nginx|https://nginx.org/en/download.html|
 |JetBrains IDE & Plugins|PyCharm：https://www.jetbrains.com/pycharm/download/<br>WebStorm：https://www.jetbrains.com/webstorm/download/<br>Plugins：https://plugins.jetbrains.com/search/|
-|Python|官方：https://www.python.org/downloads/<br>淘宝镜像：https://npm.taobao.org/mirrors/python/<br>搜狐镜像：https://mirrors.sohu.com/python/<br>华为镜像：https://mirrors.huaweicloud.com/python/<br>Docker：https://hub.docker.com/_/python/|
+|Python|官方：https://www.python.org/downloads/<br>淘宝镜像：https://npm.taobao.org/mirrors/python/<br>华为镜像：https://mirrors.huaweicloud.com/python/<br>Docker：https://hub.docker.com/_/python/|
 |Node.js|官方：https://nodejs.org/dist/<br>淘宝镜像：https://npm.taobao.org/mirrors/node/|
-|SSH & SFTP client|Xshell：https://www.netsarang.com/download/free_license.html<br>PuTTY：https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html<br>Bitvise：https://www.bitvise.com/ssh-client-download<br>WinSCP：https://winscp.net/eng/download.php<br>FileZilla：https://filezilla-project.org/download.php?type=client<br>|
+|SSH & SFTP client|PuTTY：https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html<br>Bitvise：https://www.bitvise.com/ssh-client-download<br>WinSCP：https://winscp.net/eng/download.php<br>FileZilla：https://filezilla-project.org/download.php?type=client<br>|
 |MongoDB & GUI|MongoDB：https://www.mongodb.com/download-center/community<br>Robo 3T：https://robomongo.org/download|
 |Redis on Windows|https://github.com/MicrosoftArchive/redis/releases|
 |DB Browser for SQLite|http://sqlitebrowser.org/|
 |MySQL & GUI|MySQL：https://dev.mysql.com/downloads/installer/<br>MySQL Workbench：https://dev.mysql.com/downloads/workbench/<br>MySQL Workbench Windows Prerequisites：[.NET Framework 4.5.2](https://www.microsoft.com/zh-CN/download/details.aspx?id=42637) & [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/zh-CN/download/details.aspx?id=48145)|
 |Postman|https://www.getpostman.com/apps|
 |微信开发者工具|https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html|
-|编辑器|Visual Studio Code：https://code.visualstudio.com/download<br>Notepad++：https://notepad-plus-plus.org/download/|
+|编辑器|Visual Studio Code：https://code.visualstudio.com/download<br>Notepad++：https://notepad-plus-plus.org/downloads/|
 |Cmder|http://cmder.net/|
 |Mark Text|https://github.com/marktext/marktext/releases|
 |MariaDB|https://downloads.mariadb.org/|
 |rapidee|https://www.rapidee.com/en/download|
+|Process Explorer|https://docs.microsoft.com/zh-cn/sysinternals/downloads/process-explorer|
+|SpaceSniffer|http://www.uderzo.it/main_products/space_sniffer/download.html|
+|Intel® XTU|https://downloadcenter.intel.com/download/24075/Intel-Extreme-Tuning-Utility-Intel-XTU-|
 
 # 其他
 |软件|链接|说明|
