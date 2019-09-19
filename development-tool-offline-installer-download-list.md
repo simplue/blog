@@ -31,6 +31,7 @@
 |SimpleDnsCrypt|https://github.com/bitbeans/SimpleDnsCrypt/releases|
 |AuroraDNS|https://github.com/mili-tan/AuroraDNS.GUI/releases|
 |Telegram|https://telegram.org/apps|
+|natapp|https://natapp.cn/#download|
 
 # 其他
 |软件|链接|说明|
