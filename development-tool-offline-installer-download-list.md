@@ -37,6 +37,7 @@
 |DNS|AuroraDNS：https://github.com/mili-tan/AuroraDNS.GUI/releases<br>SimpleDnsCrypt：https://github.com/bitbeans/SimpleDnsCrypt/releases|
 |Shadowrocket|IPA：https://github.com/Cowan97/Shadowrocket/raw/master/Shadowrocket-2.1.11.ipa<br>RuleA：https://github.com/h2y/Shadowrocket-ADBlock-Rules/blob/master/readme.md#%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8<br>RuleB：https://github.com/lhie1/Rules#remote-files|
 |Airport|https://github.com/DuyaoSS/SSR/issues/1|
+|Rule for PC|https://github.com/FelisCatus/SwitchyOmega/wiki/GFWList|
 
 # 其他
 |软件|链接|说明|
