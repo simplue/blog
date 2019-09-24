@@ -1,4 +1,4 @@
-FROM python:2.7-alpine
+FROM python:3.6-alpine
 
 RUN pip install --no-cache-dir -i https://pypi.mirrors.ustc.edu.cn/simple tornado
 
@@ -8,4 +8,4 @@ WORKDIR /app
 
 EXPOSE 8888
 
-CMD ["python2", "app.py"]
+CMD ["python3", "app.py"]
