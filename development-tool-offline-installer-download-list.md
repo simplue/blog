@@ -4,12 +4,13 @@
 |:--:|:--:|
 |Git & GUI|Git：https://git-scm.com/downloads/<br>Sourcetree：https://www.sourcetreeapp.com<br>GitHub：https://desktop.github.com<br>TortoiseGit：https://tortoisegit.org/download/|
 |FireFox|https://ftp.mozilla.org/pub/firefox/releases/|
-|Chrome & Extension|Chrome：https://cloud.google.com/chrome-enterprise/browser/download/#chrome-browser-download<br>Extension：https://chrome-extension-downloader.com/|
+|Chrome & Extension|Chrome：https://cloud.google.com/chrome-enterprise/browser/download/#chrome-browser-download<br>Extension：https://crxdl.com/|
+|Brave|https://github.com/brave/brave-browser/releases|
 |Vagrant|https://releases.hashicorp.com/vagrant/|
 |VirtualBox|官方：https://www.virtualbox.org/wiki/Download_Old_Builds/<br>清华大学镜像：https://mirrors.tuna.tsinghua.edu.cn/virtualbox/|
 |VMware Workstation Player|https://www.vmware.com/go/tryplayer/|
 |Nginx|https://nginx.org/en/download.html|
-|JetBrains IDE & Plugins|PyCharm：https://www.jetbrains.com/pycharm/download/<br>WebStorm：https://www.jetbrains.com/webstorm/download/<br>Plugins：https://plugins.jetbrains.com/search/|
+|JetBrains IDE & Plugins|PyCharm：https://www.jetbrains.com/pycharm/download/<br>WebStorm：https://www.jetbrains.com/webstorm/download/<br>Plugins：https://plugins.jetbrains.com/search/<br>Patch：https://zhile.io/2018/08/25/jetbrains-license-server-crack.html|
 |Golang|https://golang.google.cn/dl/<br>https://golang.org/dl/|
 |Python|官方：https://www.python.org/downloads/<br>淘宝镜像：https://npm.taobao.org/mirrors/python/<br>华为镜像：https://mirrors.huaweicloud.com/python/<br>Docker：https://hub.docker.com/_/python/|
 |Node.js|官方：https://nodejs.org/dist/<br>淘宝镜像：https://npm.taobao.org/mirrors/node/|
@@ -22,14 +23,14 @@
 |微信开发者工具|https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html|
 |编辑器|Visual Studio Code：https://code.visualstudio.com/download<br>Notepad++：https://notepad-plus-plus.org/downloads/|
 |Cmder|http://cmder.net/|
-|Mark Text|https://github.com/marktext/marktext/releases|
 |MariaDB|https://downloads.mariadb.org/|
 |rapidee|https://www.rapidee.com/en/download|
 |Process Explorer|https://docs.microsoft.com/zh-cn/sysinternals/downloads/process-explorer|
 |SpaceSniffer|http://www.uderzo.it/main_products/space_sniffer/download.html|
 |Intel® XTU|https://downloadcenter.intel.com/download/24075/Intel-Extreme-Tuning-Utility-Intel-XTU-|
-|Docker Desktop on Windows|Win7:<br>https://docs.docker.com/toolbox/toolbox_install_windows/<br>https://github.com/docker/toolbox/releases<br>https://github.com/boot2docker/boot2docker/releases<br>Win10:https://docs.docker.com/docker-for-windows/install/<br>https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe (old version)|
+|Docker Desktop on Windows|Win7:<br>https://docs.docker.com/toolbox/toolbox_install_windows/<br>https://github.com/docker/toolbox/releases<br>https://github.com/boot2docker/boot2docker/releases<br>Win10:<br>https://docs.docker.com/docker-for-windows/install/<br>https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe (old version)|
 |natapp|https://natapp.cn/#download|
+|Sumatra PDF|https://www.sumatrapdfreader.org/download-free-pdf-viewer.html|
 
 # 其他
 |软件|链接|说明|
