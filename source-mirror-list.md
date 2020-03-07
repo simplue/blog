@@ -1,7 +1,7 @@
 ### 企业镜像站
 |企业|链接|HTTPS|
 |:--:|:--:|:--:|
-|阿里云|https://opsx.alibaba.com/mirror|✔|
+|阿里云|https://developer.aliyun.com/mirror/|✔|
 |腾讯云|https://mirrors.cloud.tencent.com|✔|
 |华为云|https://mirrors.huaweicloud.com|✔|
 |网易|https://mirrors.163.com<br>http://mirrors.cn99.com|✔|
