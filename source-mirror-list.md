@@ -20,7 +20,6 @@
 |大连东软信息学院|https://mirrors.neusoft.edu.cn|✔|
 |北京交通大学|https://mirror.bjtu.edu.cn|✔|
 |南京大学|https://mirrors.nju.edu.cn|✔|
-|上海大学|https://mirrors.shuosc.org|✔|
 |浙江大学|https://mirrors.zju.edu.cn|✔|
 |重庆大学|https://mirrors.cqu.edu.cn|✔|
 |同济大学|https://mirrors.tongji.edu.cn|✔|
