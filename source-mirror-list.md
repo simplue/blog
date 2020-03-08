@@ -4,6 +4,7 @@
 |阿里云|https://developer.aliyun.com/mirror/|✔|
 |腾讯云|https://mirrors.cloud.tencent.com|✔|
 |华为云|https://mirrors.huaweicloud.com|✔|
+|Azure|https://mirror.azk8s.cn/|✔|
 |网易|https://mirrors.163.com<br>http://mirrors.cn99.com|✔|
 |淘宝|https://npm.taobao.org/mirrors|✔|
 |搜狐|https://mirrors.sohu.com|✔|
