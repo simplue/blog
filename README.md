@@ -1,4 +1,6 @@
-# 简书博客 https://www.jianshu.com/u/d5237caab7bf
+# 简书博客 
+
+https://www.jianshu.com/u/d5237caab7bf
 
 # 导航
 ## Linux
@@ -36,5 +38,3 @@
 [开源镜像](https://github.com/simplue/blog/blob/master/source-mirror-list.md)
 
 [常用软件](https://github.com/simplue/blog/blob/master/development-tool-offline-installer-download-list.md)
-
-
