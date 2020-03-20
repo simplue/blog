@@ -1,5 +1,4 @@
-# 简书博客
-https://www.jianshu.com/u/d5237caab7bf
+# 简书博客 https://www.jianshu.com/u/d5237caab7bf
 
 # 导航
 ## Linux
@@ -8,6 +7,8 @@ https://www.jianshu.com/u/d5237caab7bf
 [Linux杂项](https://github.com/simplue/blog/blob/master/linux-wtf.md)
 
 ## Python
+[Tornado](https://www.jianshu.com/p/06c68ef26514)
+
 [Python网络](https://github.com/simplue/blog/blob/master/python-n-gateway-introduction.md)
 
 [Python包管理](https://github.com/simplue/blog/blob/master/python-package-n-version-manage.md)
