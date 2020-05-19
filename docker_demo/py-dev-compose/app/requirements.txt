@@ -1,6 +1,0 @@
--i https://pypi.mirrors.ustc.edu.cn/simple
-tornado
-mysqlclient
-redis
-pymongo
-raven
